@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:waiwan/components/bottom_appbar.dart';
+import 'package:waiwan/components/bottom_appbar.dart'; // ใช้ประเภท Destination
+import 'package:waiwan/screens/profile_content.dart'; // ใช้หน้าโปรไฟล์
+import 'package:waiwan/screens/notification_content.dart';
 
 class MyMainPage extends StatefulWidget {
   const MyMainPage({super.key});
@@ -35,47 +37,60 @@ class _MyMainPageState extends State<MyMainPage> {
       label: 'โปรไฟล์',
     ),
   ];
+
+  // ✅ หน้าของแต่ละแท็บ (เอา ProfileContent มาใส่แท็บโปรไฟล์)
+  final List<Widget> _pages = const [
+    Center(child: Text('หน้าแรก')),
+    Center(child: Text('ข้อความ')),
+    NotificationScreen (),
+    ProfileContent(), // << หน้าต่างโปรไฟล์ของคุณ
+  ];
+
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: scheme.primary,
         title: Text(
           _currentTitle,
           style: TextStyle(
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: scheme.onPrimary,
             fontWeight: FontWeight.w600,
             fontSize: 30,
           ),
         ),
       ),
-      body: Scaffold(),
+
+      // ❌ เดิม: body: Scaffold(),
+      // ✅ ใหม่: แสดงเพจตามแท็บ
+      body: IndexedStack(index: _currentIndex, children: _pages),
+
       bottomNavigationBar: NavigationBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: scheme.primary,
+        
+        // ถ้าเวอร์ชันคุณฟ้อง ให้เปลี่ยนเป็น MaterialStatePropertyAll(...)
+        // ignore: deprecated_member_use
         labelTextStyle: WidgetStateProperty.all(
           TextStyle(
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: scheme.onPrimary,
             fontWeight: FontWeight.w500,
             fontSize: 16,
           ),
         ),
-        destinations: destinations
-            .map<NavigationDestination>(
-              (Destination destination) => NavigationDestination(
-                icon: Icon(
-                  destination.icon,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-                selectedIcon: Icon(
-                  destination.iconSelected,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-                label: destination.label,
-              ),
-            )
-            .toList(),
+        destinations:
+            destinations
+                .map(
+                  (d) => NavigationDestination(
+                    icon: Icon(d.icon, color: scheme.onPrimary),
+                    selectedIcon: Icon(d.iconSelected, color: scheme.onPrimary),
+                    label: d.label,
+                  ),
+                )
+                .toList(),
         selectedIndex: _currentIndex,
-        indicatorColor: Theme.of(context).colorScheme.inversePrimary,
+        indicatorColor: scheme.inversePrimary,
         onDestinationSelected: (int index) {
           setState(() {
             _currentIndex = index;
