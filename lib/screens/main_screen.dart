@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:waiwan/components/bottom_appbar.dart';
+import 'screenmenu/home_screen_body.dart';
+
+class Destination {
+  final IconData icon;
+  final IconData iconSelected;
+  final String label;
+  const Destination({
+    required this.icon,
+    required this.iconSelected,
+    required this.label,
+  });
+}
 
 class MyMainPage extends StatefulWidget {
   const MyMainPage({super.key});
-  final String title = 'หน้าแรก';
 
   @override
   State<MyMainPage> createState() => _MyMainPageState();
@@ -35,54 +45,76 @@ class _MyMainPageState extends State<MyMainPage> {
       label: 'โปรไฟล์',
     ),
   ];
+
+  Widget _homePage(BuildContext context) {
+    return const HomeScreenBody();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final onPrimary = Theme.of(context).colorScheme.onPrimary;
+
+    return Theme(
+      data: Theme.of(context).copyWith(
+        navigationBarTheme: NavigationBarThemeData(
+          labelTextStyle: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const TextStyle(color: Colors.black, height: 0.5);
+            }
+            return const TextStyle(color: Colors.white, height: 0.5);
+          }),
+          iconTheme: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const IconThemeData(size: 30, color: Colors.black);
+            }
+            return const IconThemeData(size: 30, color: Colors.white);
+          }),
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        ),
+      ),
+      child: Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
+        centerTitle: true,    // Center the title
         title: Text(
           _currentTitle,
           style: TextStyle(
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: onPrimary,
             fontWeight: FontWeight.w600,
-            fontSize: 30,
+            fontSize: 25,
           ),
         ),
       ),
-      body: Scaffold(),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: [
+          _homePage(context),
+          const Center(child: Text('หน้าข้อความ')),
+          const Center(child: Text('หน้าแจ้งเตือน')),
+          const Center(child: Text('หน้าแจ้งเตือน')),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        labelTextStyle: WidgetStateProperty.all(
-          TextStyle(
-            color: Theme.of(context).colorScheme.onPrimary,
-            fontWeight: FontWeight.w500,
-            fontSize: 16,
-          ),
-        ),
-        destinations: destinations
-            .map<NavigationDestination>(
-              (Destination destination) => NavigationDestination(
-                icon: Icon(
-                  destination.icon,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-                selectedIcon: Icon(
-                  destination.iconSelected,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-                label: destination.label,
-              ),
-            )
-            .toList(),
-        selectedIndex: _currentIndex,
-        indicatorColor: Theme.of(context).colorScheme.inversePrimary,
-        onDestinationSelected: (int index) {
-          setState(() {
-            _currentIndex = index;
-            _currentTitle = destinations[index].label;
-          });
-        },
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          elevation: 0,
+          indicatorColor: Colors.transparent,
+          height: 70,
+          destinations: destinations.map((d) {
+            return NavigationDestination(
+              icon: Icon(d.icon),
+              selectedIcon: Icon(d.iconSelected),
+              label: d.label,
+            );
+          }).toList(),
+          selectedIndex: _currentIndex,
+          onDestinationSelected: (int index) {
+            setState(() {
+              _currentIndex = index;
+              _currentTitle = destinations[index].label;
+            });
+          },
       ),
+    ),
     );
   }
 }
