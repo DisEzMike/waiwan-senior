@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:waiwan/screens/screenmenu/Chatlist_screen.dart';
 import 'screenmenu/home_screen_body.dart';
+import 'screenmenu/Chatlist_screen.dart';
 
 class Destination {
   final IconData icon;
@@ -89,7 +91,7 @@ class _MyMainPageState extends State<MyMainPage> {
         index: _currentIndex,
         children: [
           _homePage(context),
-          const Center(child: Text('หน้าข้อความ')),
+          const ChatlistScreen(),
           const Center(child: Text('หน้าแจ้งเตือน')),
           const Center(child: Text('หน้าแจ้งเตือน')),
         ],

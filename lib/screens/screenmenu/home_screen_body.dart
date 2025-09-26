@@ -4,6 +4,8 @@ import 'Status/Employment_data.dart';
 import 'Status/JobStatus.dart';
 import 'history/history_class.dart';
 import 'history/history_data.dart';
+import 'data/demo_data.dart';
+import 'data/elderlypersonclass.dart';
 
 class HomeScreenBody extends StatefulWidget {
   const HomeScreenBody({super.key});
@@ -13,7 +15,9 @@ class HomeScreenBody extends StatefulWidget {
 }
 
 class _HomeScreenBodyState extends State<HomeScreenBody> {
-  final EmployeeData employee = mockNotHiredEmployee; // เปลี่ยนเป็น mockNotHiredEmployee เพื่อทดสอบสถานะ notHired
+  final EmployeeData employee = mockHiredEmployee; // เปลี่ยนเป็น mockNotHiredEmployee เพื่อทดสอบสถานะ notHired
+  final ElderlyPerson elderlyPerson =
+      demoElderlyPersons.firstWhere((person) => person.id == 1);
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -62,7 +66,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                           ),
                           child: ClipOval(
                             child: Image.asset(
-                              'assets/images/guy_old.png',
+                              elderlyPerson.imageUrl,
                               width: 110,
                               height: 110,
                               fit: BoxFit.cover,
@@ -74,7 +78,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                         
                         // --- Text Details ---
                         Expanded( // ใช้ Expanded เพื่อให้ Text Column ใช้พื้นที่ที่เหลือ
-                          child: const Column(
+                          child:  Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
@@ -87,8 +91,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                               ),
 
                               Text(
-                                'บาบี้ ที่หนึ่งเท่านั้น',
-                                style: TextStyle(
+                                elderlyPerson.name,
+                                style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                   color: Color.fromRGBO(56, 139, 18, 1),
@@ -104,7 +108,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                                 ),
                               ),
                               Text(
-                                'สอนพิเศษ', 
+                                elderlyPerson.ability, 
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,

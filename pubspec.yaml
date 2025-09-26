@@ -67,6 +67,8 @@ flutter:
     - assets/icons/star.png
     - assets/images/guy_old.png
     - assets/icons/Jobber.png
+    - assets/images/guy.png
+    - assets/images/simon.png
     
 
   # To add assets to your application, add an assets section, like this:
