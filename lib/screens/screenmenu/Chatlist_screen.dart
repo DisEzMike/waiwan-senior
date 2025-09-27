@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // แก้ไข Path ให้ถูกต้อง (แนะนำให้ใช้ตัวพิมพ์เล็ก)
 import 'data/chatlist_data.dart';
+import 'chat_screen.dart';
 
 class ChatlistScreen extends StatefulWidget {
   const ChatlistScreen({super.key});
@@ -21,10 +22,13 @@ class _ChatListScreenState extends State<ChatlistScreen> {
           // --- ส่วนที่แก้ไข: เพิ่ม InkWell เข้าไป ---
           return InkWell(
             onTap: () {
-              // โค้ดที่จะทำงานเมื่อกดที่รายการนี้
-              print('กดที่แชทของ ${chat.name}');
-              // ในอนาคตสามารถใส่โค้ดเปลี่ยนหน้าจอไปหน้าแชทของคนๆ นั้นได้ตรงนี้
-              // เช่น Navigator.push(...);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  // ส่งข้อมูล 'chat' ไปให้ ChatScreen
+                  builder: (_) => ChatScreen(chat: chat),
+                ),
+              );
             },
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 27.0, horizontal: 16.0),
