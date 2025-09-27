@@ -59,13 +59,15 @@ class _OtpScreenState extends State<OtpScreen> {
     return Scaffold(
       backgroundColor: cardColor,
       appBar: AppBar(
-        backgroundColor: cardColor,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black87),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         title: const Text(
           'ยืนยันเบอร์โทรศัพท์',
-          style: TextStyle(color: Colors.black87),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Center(
@@ -77,7 +79,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 if (masked.isNotEmpty) ...[
                   Text(
                     'รหัสถูกส่งไปยัง $masked',
-                    style: const TextStyle(color: Colors.black87),
+                    style: const TextStyle(color: Colors.black87,fontSize: 28),
                   ),
                   const SizedBox(height: 12),
                 ],
@@ -138,7 +140,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   },
                   child: const Text(
                     'ส่งรหัสยืนยันอีกครั้ง',
-                    style: TextStyle(color: Colors.green),
+                    style: TextStyle(color: Colors.green,fontSize: 24,fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -160,7 +162,9 @@ class _OtpScreenState extends State<OtpScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text('ยืนยัน'),
+                    child: const Text('ยืนยัน',
+                    style: TextStyle(fontWeight: FontWeight.bold,
+                    fontSize: 24),),
                   ),
                 ),
               ],

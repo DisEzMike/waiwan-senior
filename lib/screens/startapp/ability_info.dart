@@ -196,19 +196,25 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
                     child: Image.file(_imageFile!, fit: BoxFit.cover),
                   )
                 : const Center(
-                    child: Text("ยังไม่มีรูปภาพ", style: TextStyle(color: Colors.grey)),
+                    child: Text("ยังไม่มีรูปภาพ", 
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      color: Colors.grey)),
                   ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 15),
           SizedBox(
             width: double.infinity,
+            height: 60,
             child: ElevatedButton(
               onPressed: _pickImage,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
               ),
-              child: const Text("เลือกรูปภาพจากคลัง"),
+              child: const Text("เลือกรูปภาพจากคลัง",
+              style: TextStyle(fontSize: 20),),
             ),
           )
         ],
@@ -368,9 +374,15 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF6EB715),
-        title: const Text('ความสามารถ'),
-        elevation: 0,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: const Text(
+          'ความสามารถ',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(

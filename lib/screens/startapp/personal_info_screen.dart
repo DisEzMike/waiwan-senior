@@ -120,9 +120,15 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF3FDEC),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF6EB715),
-        // ขนาดของ Title ยังคงเท่าเดิม
-        title: const Text('ข้อมูลส่วนตัว'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: const Text(
+          'ข้อมูลส่วนตัว',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(

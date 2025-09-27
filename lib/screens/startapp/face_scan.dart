@@ -167,9 +167,15 @@ class _FaceScanScreenState extends State<FaceScanScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF3FDEC),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF6EB715),
-        title: const Text('ตรวจสอบใบหน้า'),
-        elevation: 0,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: const Text(
+          'ตรวจสอบใบหน้า',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Column(
@@ -256,7 +262,8 @@ class _FaceScanScreenState extends State<FaceScanScreen> {
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
-                  child: const Text('ยืนยัน'),
+                  child: const Text('ยืนยัน',
+                  style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24),),
                 ),
               ),
             ),

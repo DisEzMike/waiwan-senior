@@ -61,7 +61,7 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                       const Text(
                         'เข้าสู่ระบบ',
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 32,
                           fontWeight: FontWeight.bold,
                           color: Colors.black87,
                         ),
@@ -69,11 +69,13 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                       const SizedBox(height: 16),
                       const Text(
                         'เบอร์โทร',
-                        style: TextStyle(fontSize: 14, color: Colors.black54),
+                        style: TextStyle(fontSize: 24, color: Colors.black54),
                       ),
                       const SizedBox(height: 8),
                       TextField(
                         controller: phoneController,
+                        // เพิ่ม style เพื่อกำหนดขนาดตัวอักษรตอนกรอก
+                        style: const TextStyle(fontSize: 24),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
@@ -87,7 +89,9 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                             borderSide: BorderSide.none,
                           ),
                           hintText: '0812345678',
-                          hintStyle: TextStyle(color: Colors.black26),
+                          hintStyle: TextStyle(
+                            fontSize: 24,
+                            color: Colors.black26),
                           prefixIcon: const Icon(Icons.phone),
                         ),
                       ),
@@ -114,7 +118,9 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          child: const Text('ต่อไป'),
+                          child: const Text('ต่อไป',
+                          style: TextStyle(fontWeight: FontWeight.bold,
+                          fontSize: 24),),
                         ),
                       ),
                     ],
@@ -151,6 +157,8 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                       const SizedBox(height: 8),
                       TextField(
                         controller: phoneController,
+                        // เพิ่ม style เพื่อกำหนดขนาดตัวอักษรตอนกรอก
+                        style: const TextStyle(fontSize: 16),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
@@ -164,7 +172,11 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                             borderSide: BorderSide.none,
                           ),
                           hintText: '0812345678',
-                          hintStyle: TextStyle(color: Colors.black26),
+                          // เพิ่ม fontSize ให้ hintStyle เพื่อให้ขนาดเท่ากัน
+                          hintStyle: const TextStyle(
+                            color: Colors.black26,
+                            fontSize: 16,
+                          ),
                           prefixIcon: const Icon(Icons.phone),
                         ),
                       ),
@@ -190,6 +202,9 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
+                            textStyle: const TextStyle(
+                              fontSize: 28,
+                            )
                           ),
                           child: const Text('ต่อไป'),
                         ),

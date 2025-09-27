@@ -9,9 +9,15 @@ class IdCardScanScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF3FDEC),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF6EB715),
-        title: const Text('ถ่ายบัตรประชาชน'),
-        elevation: 0,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: const Text(
+          'ถ่ายบัตรประชาชน',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Column(
