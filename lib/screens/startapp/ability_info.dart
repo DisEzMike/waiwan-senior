@@ -1,15 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:waiwan/screens/startapp/cash_income.dart';
+import 'package:waiwan/services/auth_service.dart';
 
-enum ExperienceLevel {
-  certified,
-  experienced,
-  noExperience,
-}
+enum ExperienceLevel { certified, experienced, noExperience }
 
 class AbilityInfoScreen extends StatefulWidget {
-  const AbilityInfoScreen({super.key});
+  final dynamic payload;
+
+  const AbilityInfoScreen({super.key, required this.payload});
 
   @override
   State<AbilityInfoScreen> createState() => _AbilityInfoScreenState();
@@ -17,7 +18,7 @@ class AbilityInfoScreen extends StatefulWidget {
 
 class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
   ExperienceLevel? _selectedOption;
-  
+
   File? _imageFile;
   bool? _hasVehicle;
   bool? _canWorkOffsite;
@@ -34,7 +35,9 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
 
     if (pickedFile != null) {
       setState(() {
@@ -47,21 +50,22 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
   void _showValidationDialog(String message) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('ข้อมูลไม่ครบถ้วน'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('ตกลง'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('ข้อมูลไม่ครบถ้วน'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('ตกลง'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   // ⭐️ 2. แก้ไขฟังก์ชัน submit ให้มีการตรวจสอบข้อมูล
-  void _submitForm() {
+  void _submitForm() async {
     // ตรวจสอบว่าเลือกตัวเลือกหลักหรือยัง
     if (_selectedOption == null) {
       _showValidationDialog('กรุณาเลือกประเภทความสามารถของคุณ');
@@ -94,7 +98,36 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
 
     // ถ้าข้อมูลครบถ้วน ให้ไปหน้าต่อไป
     if (isFormValid) {
-      Navigator.pushNamed(context, '/cash_income');
+      try {
+        // send to backend
+        final work_experience = _jobNameController.text.isNotEmpty
+            ? _jobNameController.text
+            : "-";
+        final payload = {
+          'profile': widget.payload,
+          'ability': {
+            'type': _selectedOption.toString().split('.').last,
+            'work_experience': work_experience,
+            'other_ability': _skillsController.text,
+            'vehicle': _hasVehicle,
+            'offsite_work': _canWorkOffsite,
+          }
+        };
+        final auth_code = localStorage.getItem("auth_code");
+        print(payload);
+        final resp = await AuthService.authentication(auth_code!, payload);
+        localStorage.setItem('user_data', resp['user_data'].toString());
+        localStorage.setItem('token', resp['access_token'].toString());
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const CashIncomeScreen()),
+        );
+      } catch (e) {
+        // handle error
+        print('Error submitting personal info: $e');
+      }
+      // Navigator.pushNamed(context, '/cash_income');
     } else {
       // ถ้าข้อมูลไม่ครบ ให้แสดง Dialog แจ้งเตือน
       _showValidationDialog('กรุณากรอกข้อมูลทั้งหมดให้ครบถ้วน');
@@ -135,7 +168,10 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          ),
           const SizedBox(height: 8),
           Container(
             decoration: BoxDecoration(
@@ -162,7 +198,10 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
                   borderRadius: BorderRadius.circular(8.0),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 12.0,
+                ),
               ),
             ),
           ),
@@ -190,18 +229,22 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
               borderRadius: BorderRadius.circular(8.0),
               border: Border.all(color: Colors.grey[400]!),
             ),
-            child: _imageFile != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.file(_imageFile!, fit: BoxFit.cover),
-                  )
-                : const Center(
-                    child: Text("ยังไม่มีรูปภาพ", 
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: Colors.grey)),
-                  ),
+            child:
+                _imageFile != null
+                    ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.file(_imageFile!, fit: BoxFit.cover),
+                    )
+                    : const Center(
+                      child: Text(
+                        "ยังไม่มีรูปภาพ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
           ),
           const SizedBox(height: 15),
           SizedBox(
@@ -213,10 +256,12 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
               ),
-              child: const Text("เลือกรูปภาพจากคลัง",
-              style: TextStyle(fontSize: 20),),
+              child: const Text(
+                "เลือกรูปภาพจากคลัง",
+                style: TextStyle(fontSize: 20),
+              ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -228,12 +273,18 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("ยานพาหนะ", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+          const Text(
+            "ยานพาหนะ",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          ),
           Row(
             children: [
               Expanded(
                 child: RadioListTile<bool>(
-                  title: const Text('มี',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+                  title: const Text(
+                    'มี',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  ),
                   value: true,
                   groupValue: _hasVehicle,
                   onChanged: (bool? value) {
@@ -245,7 +296,10 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
               ),
               Expanded(
                 child: RadioListTile<bool>(
-                  title: const Text('ไม่มี',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+                  title: const Text(
+                    'ไม่มี',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  ),
                   value: false,
                   groupValue: _hasVehicle,
                   onChanged: (bool? value) {
@@ -268,12 +322,18 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("ทำงานนอกสถานที่ได้", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+          const Text(
+            "ทำงานนอกสถานที่ได้",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          ),
           Row(
             children: [
               Expanded(
                 child: RadioListTile<bool>(
-                  title: const Text('ได้',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+                  title: const Text(
+                    'ได้',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  ),
                   value: true,
                   groupValue: _canWorkOffsite,
                   onChanged: (bool? value) {
@@ -285,7 +345,10 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
               ),
               Expanded(
                 child: RadioListTile<bool>(
-                  title: const Text('ไม่ได้',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),),
+                  title: const Text(
+                    'ไม่ได้',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  ),
                   value: false,
                   groupValue: _canWorkOffsite,
                   onChanged: (bool? value) {
@@ -377,10 +440,7 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: const Text(
           'ความสามารถ',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -422,10 +482,11 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 16),
-            
           ),
-          child: const Text('ถัดไป',
-          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24),),
+          child: const Text(
+            'ถัดไป',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          ),
         ),
       ),
     );

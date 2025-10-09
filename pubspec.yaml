@@ -36,7 +36,11 @@ dependencies:
   intl: ^0.20.2
   camera: ^0.10.0+6
   permission_handler: ^10.4.0
-  # google_mlkit_face_detection: ^0.7.0
+  flutter_svg: ^2.0.9
+  http: ^1.2.0
+  localstorage: ^6.0.0
+  geolocator: ^14.0.2
+  provider: ^6.1.5+1
   
 
 
@@ -80,6 +84,7 @@ flutter:
     - assets/images/simon.png
     - assets/images/Untitled_Artwork 1.png
     - assets/images/p.png
+    - assets/images/waiwan_logo.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

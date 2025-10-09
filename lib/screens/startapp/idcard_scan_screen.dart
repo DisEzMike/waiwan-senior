@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waiwan/screens/startapp/personal_info_screen.dart';
 
 class IdCardScanScreen extends StatelessWidget {
   const IdCardScanScreen({super.key});
@@ -9,15 +10,9 @@ class IdCardScanScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF3FDEC),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text(
-          'ถ่ายบัตรประชาชน',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
+        backgroundColor: const Color(0xFF6EB715),
+        title: const Text('ถ่ายบัตรประชาชน'),
+        elevation: 0,
       ),
       body: SafeArea(
         child: Column(
@@ -105,43 +100,28 @@ class IdCardScanScreen extends StatelessWidget {
                         const SnackBar(content: Text('ถ่ายใหม่ (จำลอง)')),
                       );
                     },
-                    icon: const Icon(Icons.refresh,size: 27,),
-                    label: const Text(
-                      'ถ่ายใหม่',
-                      style: TextStyle(fontSize: 20),),
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('ถ่ายใหม่'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
-                      fixedSize: const Size(140,50)
                     ),
                   ),
                   ElevatedButton.icon(
                     onPressed: () {
-                      // Confirm -> navigate to personal info screen with sample parsed data
-                      final parsedData = {
-                        'name': 'สมชาย',
-                        'surname': 'ใจดี',
-                        'id_address':
-                            '123/45 หมู่ 6 ซ.สุขใจ แขวง/ตำบล ตัวอย่าง อำเภอ ตัวอย่าง จังหวัด ตัวอย่าง 12345',
-                        'current_address':
-                            '456/78 ถนนสุขุมวิท แขวง/ตำบล ปทุมวัน กรุงเทพมหานคร 10110',
-                        'phone': '0812345678',
-                        'gender': 'ชาย',
-                      };
-                      Navigator.pushNamed(
+                      // Confirm -> navigate to face scan screen
+                      Navigator.push(
                         context,
-                        '/personal_info',
-                        arguments: parsedData,
+                        MaterialPageRoute(
+                          builder: (context) => const PersonalInfoScreen(),
+                        ),
                       );
                     },
-                    icon: const Icon(Icons.camera_alt, size: 28,),
-                    label: const Text(
-                      'ยืนยัน',
-                      style: TextStyle(fontSize: 20)),
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text('ยืนยัน'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF6EB715),
                       foregroundColor: Colors.white,
-                      fixedSize: const Size(140, 50)
                     ),
                   ),
                 ],

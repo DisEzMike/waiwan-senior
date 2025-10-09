@@ -3,8 +3,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:waiwan/screens/startapp/ability_info.dart';
-// removed google_mlkit_face_detection - using simple file-size heuristic for object detection
+import 'package:waiwan/screens/startapp/idcard_scan_screen.dart';
+import 'package:waiwan/utils/font_size_helper.dart';
 
 class FaceScanScreen extends StatefulWidget {
   const FaceScanScreen({super.key});
@@ -129,11 +129,9 @@ class _FaceScanScreenState extends State<FaceScanScreen> {
         debugPrint('Captured file size: $fileSize bytes');
         // threshold (5 KB) - adjust if needed
         if (fileSize > 5000) {
-          messenger.showSnackBar(
-            SnackBar(content: Text('พบวัตถุ (ไฟล์ขนาด $fileSize ไบต์)')),
-          );
           // Navigate to main screen and remove all previous routes
-          Navigator.pushNamed(context, '/ability_info'
+          navigator.push(
+            MaterialPageRoute(builder: (_) => const IdCardScanScreen()),
           );
         } else {
           messenger.showSnackBar(
@@ -167,15 +165,16 @@ class _FaceScanScreenState extends State<FaceScanScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF3FDEC),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text(
+        backgroundColor: const Color(0xFF6EB715),
+        title: Text(
           'ตรวจสอบใบหน้า',
-          style: TextStyle(
+          style: FontSizeHelper.createTextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
             color: Colors.white,
-            fontWeight: FontWeight.bold,
           ),
         ),
-        centerTitle: true,
+        elevation: 0,
       ),
       body: SafeArea(
         child: Column(
@@ -262,8 +261,7 @@ class _FaceScanScreenState extends State<FaceScanScreen> {
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
-                  child: const Text('ยืนยัน',
-                  style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24),),
+                  child: const Text('ยืนยัน'),
                 ),
               ),
             ),

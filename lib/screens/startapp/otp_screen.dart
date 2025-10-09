@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:waiwan/screens/startapp/face_scan.dart';
+import 'package:waiwan/screens/main_screen.dart';
+import 'package:waiwan/services/auth_service.dart';
+import 'package:waiwan/utils/font_size_helper.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  final String phoneNumber;
+
+  const OtpScreen({super.key, required this.phoneNumber});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -27,8 +34,7 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   String _maskedPhone(BuildContext context) {
-    final args = ModalRoute.of(context)?.settings.arguments;
-    final phone = (args is String && args.isNotEmpty) ? args : '';
+    final phone = widget.phoneNumber;
     if (phone.isEmpty) return '';
     final digits = phone.replaceAll(RegExp(r'[^0-9]'), '');
     if (digits.length >= 4) {
@@ -50,6 +56,51 @@ class _OtpScreenState extends State<OtpScreen> {
     }
   }
 
+  Future<void> _submitOTP() async {
+    final phone = widget.phoneNumber;
+    final otp = _controllers.map((c) => c.text).join();
+    print('Submitted OTP: $otp');
+
+    // // TODO: validate OTP with backend
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder:
+    //         (context) => const PersonalInfoScreen(),
+    //   ),
+    // );
+
+    try {
+      final res = await AuthService.verifyOtp(phone, otp);
+      if (!res['is_new']) {
+        final resp = await AuthService.authentication(res['auth_code'], {});
+        localStorage.setItem('user_data', resp['user_data'].toString());
+        localStorage.setItem('token', resp['access_token'].toString());
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MyMainPage()),
+          (route) => false,
+        );
+      } else {
+        localStorage.setItem('is_new', "${res['is_new']}");
+        localStorage.setItem("auth_code", res['auth_code']);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const FaceScanScreen()),
+        );
+      }
+    } catch (e) {
+      print(e);
+      SnackBar snackBar = SnackBar(
+        content: Text('OTP ไม่ถูกต้อง หรือหมดอายุ'),
+        backgroundColor: Colors.red,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
   // backspace handling is done inline in KeyboardListener onKeyEvent
 
   @override
@@ -59,27 +110,59 @@ class _OtpScreenState extends State<OtpScreen> {
     return Scaffold(
       backgroundColor: cardColor,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text(
+        backgroundColor: cardColor,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black87),
+        title: Text(
           'ยืนยันเบอร์โทรศัพท์',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+          style: FontSizeHelper.createTextStyle(
+            fontSize: 18,
+            color: Colors.black87,
+            fontWeight: FontWeight.w600,
           ),
         ),
-        centerTitle: true,
       ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+            padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Text(
+                  'ป้อนรหัส OTP',
+                  style: FontSizeHelper.createTextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'กรุณากรอกรหัส 4 หลักที่ส่งไปยังโทรศัพท์ของคุณ',
+                  style: FontSizeHelper.createTextStyle(
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
                 if (masked.isNotEmpty) ...[
                   Text(
                     'รหัสถูกส่งไปยัง $masked',
-                    style: const TextStyle(color: Colors.black87,fontSize: 28),
+                    style: FontSizeHelper.createTextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ] else ...[
+                  Text(
+                    'ตรวจสอบ SMS ในโทรศัพท์ของคุณ',
+                    style: FontSizeHelper.createTextStyle(
+                      fontSize: 14,
+                      color: Colors.black54,
+                    ),
                   ),
                   const SizedBox(height: 12),
                 ],
@@ -113,13 +196,46 @@ class _OtpScreenState extends State<OtpScreen> {
                             LengthLimitingTextInputFormatter(1),
                             FilteringTextInputFormatter.digitsOnly,
                           ],
+                          style: TextStyle(fontSize: 24, color: Colors.black87),
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide: BorderSide.none,
+                              borderSide: const BorderSide(
+                                color: Colors.grey,
+                                width: 1.5,
+                              ),
                             ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: Colors.grey,
+                                width: 1.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: Color(0xFF6EB715),
+                                width: 2.0,
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: Colors.red,
+                                width: 2.0,
+                              ),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: Colors.red,
+                                width: 2.0,
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.all(16),
                           ),
                           onChanged:
                               (v) => setState(() {
@@ -138,22 +254,19 @@ class _OtpScreenState extends State<OtpScreen> {
                       const SnackBar(content: Text('ส่งรหัสใหม่ (จำลอง)')),
                     );
                   },
-                  child: const Text(
+                  child: Text(
                     'ส่งรหัสยืนยันอีกครั้ง',
-                    style: TextStyle(color: Colors.green,fontSize: 24,fontWeight: FontWeight.bold),
+                    style: FontSizeHelper.createTextStyle(
+                      fontSize: 16,
+                      color: Colors.green,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed:
-                        _isComplete
-                            ? () {
-                              // TODO: validate OTP with backend
-                              Navigator.pushNamed(context, '/idcard');
-                            }
-                            : null,
+                    onPressed: _isComplete ? _submitOTP : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF6EB715),
                       foregroundColor: Colors.white,
@@ -162,9 +275,13 @@ class _OtpScreenState extends State<OtpScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text('ยืนยัน',
-                    style: TextStyle(fontWeight: FontWeight.bold,
-                    fontSize: 24),),
+                    child: Text(
+                      'ยืนยัน',
+                      style: FontSizeHelper.createTextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ],

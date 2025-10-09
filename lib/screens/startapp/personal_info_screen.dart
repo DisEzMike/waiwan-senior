@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:waiwan/screens/main_screen.dart';
+import 'package:waiwan/screens/startapp/ability_info.dart';
+import 'package:waiwan/services/auth_service.dart';
+import 'package:waiwan/utils/font_size_helper.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
   // expects arguments: Map<String, String> with parsed id info
@@ -17,6 +22,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   final TextEditingController _idAddressController = TextEditingController();
   final TextEditingController _currentAddressController =
       TextEditingController();
+  final TextEditingController _idCardController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _genderController = TextEditingController();
   final TextEditingController _medicalController = TextEditingController();
@@ -62,10 +68,26 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     super.dispose();
   }
 
-  void _onSubmit() {
+  void _onSubmit() async {
     if (_formKey.currentState?.validate() ?? false) {
-      // proceed to face scan step
-      Navigator.pushNamed(context, '/face');
+      final payload = {
+        'first_name': _nameController.text.trim(),
+        'last_name': _surnameController.text.trim(),
+        'id_card': _idCardController.text.trim(),
+        'id_address': _idAddressController.text.trim(),
+        'current_address': _currentAddressController.text.trim(),
+        'phone': _phoneController.text,
+        'gender': _genderController.text,
+        'chronic_diseases': _medicalController.text.trim(),
+        'contact_person': _contactNameController.text.trim(),
+        'contact_phone': _contactPhoneController.text.trim(),
+      };
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AbilityInfoScreen(payload: payload))
+      );
     }
   }
 
@@ -77,38 +99,27 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ปรับขนาด font ของ Label ที่นี่
         Text(
           label,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          style: FontSizeHelper.createTextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        const SizedBox(height: 10),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: TextFormField(
-            controller: controller,
-            maxLines: maxLines,
-            style: const TextStyle(fontSize: 20),
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        const SizedBox(height: 6),
+        TextFormField(
+          controller: controller,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
             ),
-            validator:
-                (v) => (v == null || v.trim().isEmpty) ? 'กรุณาใส่ข้อมูล' : null,
           ),
+          validator:
+              (v) => (v == null || v.trim().isEmpty) ? 'กรุณาใส่ข้อมูล' : null,
         ),
         const SizedBox(height: 12),
       ],
@@ -120,19 +131,19 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF3FDEC),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text(
+        backgroundColor: const Color(0xFF6EB715),
+        title: Text(
           'ข้อมูลส่วนตัว',
-          style: TextStyle(
+          style: FontSizeHelper.createTextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
             color: Colors.white,
-            fontWeight: FontWeight.bold,
           ),
         ),
-        centerTitle: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal:32 ,vertical: 16),
+          padding: const EdgeInsets.all(16),
           child: Form(
             key: _formKey,
             child: Column(
@@ -140,6 +151,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               children: [
                 _buildField('ชื่อ', _nameController),
                 _buildField('นามสกุล', _surnameController),
+                _buildField('เลขบัตรประชาชน', _idCardController),
                 _buildField(
                   'ที่อยู่ตามบัตรประชาชน',
                   _idAddressController,
@@ -152,9 +164,9 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 ),
                 _buildField('เบอร์โทร', _phoneController),
                 _buildField('เพศ', _genderController),
-                _buildField('โรคประจำตัว', _medicalController),
-                _buildField('ชื่อผู้ที่ติดต่อได้', _contactNameController),
-                _buildField('เบอร์ผู้ที่ติดต่อได้', _contactPhoneController),
+                _buildField("โรคประจำตัว", _medicalController),
+                _buildField("ผู้ที่ติดต่อได้", _contactNameController),
+                _buildField("เบอร์โทรศัพท์", _contactPhoneController),
                 const SizedBox(height: 8),
                 SizedBox(
                   width: double.infinity,
@@ -163,12 +175,18 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF6EB715),
                       foregroundColor: Colors.white,
-                      textStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
                     ),
-                    child: const Text('ยืนยัน'),
+                    child: Text(
+                      'ยืนยัน',
+                      style: FontSizeHelper.createTextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ],
