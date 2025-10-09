@@ -37,4 +37,22 @@ class UserService {
       throw Exception('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้: $e');
     }
   }
+
+  setOnline(double lat, double lng) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/set-online'),
+            headers: headers,
+            body: jsonEncode({'lat': lat, 'lng': lng}),
+          )
+          .timeout(const Duration(seconds: 5));
+      if (response.statusCode != 204) {
+        throw Exception('Server error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error setting online: $e');
+      throw Exception('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้: $e');
+    }
+  }
 }
