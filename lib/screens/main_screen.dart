@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waiwan/screens/chat_rooms_screen.dart';
 import 'package:waiwan/screens/screenmenu/home_screen_body.dart';
 import 'nav_bar.dart';
 import 'profilescreen/contractor_profile.dart';
@@ -21,7 +22,7 @@ class MyMainPage extends StatelessWidget {
         ),
         AppNavItem(
           destination: destinations[1],
-          builder: (context) => const _TextPlaceholder('หน้าข้อความ'),
+          builder: (context) => ChatRoomsScreen(),
         ),
         AppNavItem(
           destination: destinations[2],

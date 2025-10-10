@@ -25,7 +25,7 @@ class _ContractorProfileState extends State<ContractorProfile> {
   }
 
   void _loadProfile() async {
-    final res = await UserService(accessToken: _token).getProfile();
+    final res = await UserService().getProfile();
     if (res != null && mounted) {
       setState(() {
         // Update user state with fetched profile data

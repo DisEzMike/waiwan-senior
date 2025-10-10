@@ -41,9 +41,10 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   void _setOnlineStatus() async {
     print("Setting user online status...");
     Position position = await _determinePosition();
-    await UserService(
-      accessToken: _token,
-    ).setOnline(position.latitude, position.longitude); // เรียกใช้ครั้งแรกทันที
+    await UserService().setOnline(
+      position.latitude,
+      position.longitude,
+    ); // เรียกใช้ครั้งแรกทันที
   }
 
   @override
