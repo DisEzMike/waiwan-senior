@@ -59,22 +59,11 @@ class _OtpScreenState extends State<OtpScreen> {
   Future<void> _submitOTP() async {
     final phone = widget.phoneNumber;
     final otp = _controllers.map((c) => c.text).join();
-    print('Submitted OTP: $otp');
-
-    // // TODO: validate OTP with backend
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder:
-    //         (context) => const PersonalInfoScreen(),
-    //   ),
-    // );
-
     try {
       final res = await AuthService.verifyOtp(phone, otp);
       if (!res['is_new']) {
         final resp = await AuthService.authentication(res['auth_code'], {});
-        localStorage.setItem('user_data', resp['user_data'].toString());
+        localStorage.setItem('userId', resp['user_id'].toString());
         localStorage.setItem('token', resp['access_token'].toString());
 
         Navigator.pushAndRemoveUntil(

@@ -114,9 +114,8 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
           }
         };
         final auth_code = localStorage.getItem("auth_code");
-        print(payload);
         final resp = await AuthService.authentication(auth_code!, payload);
-        localStorage.setItem('user_data', resp['user_data'].toString());
+        localStorage.setItem('userId', resp['user_id'].toString());
         localStorage.setItem('token', resp['access_token'].toString());
 
         Navigator.push(

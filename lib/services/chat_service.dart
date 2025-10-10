@@ -9,7 +9,7 @@ import '../model/chat_room.dart';
 
 class ChatService {
   static const String baseUrl = '$API_URL/chat'; // Replace with your API URL
-  
+
   static Future<Map<String, String>> _getHeaders() async {
     final token = localStorage.getItem('token') ?? '';
     return {
@@ -40,7 +40,11 @@ class ChatService {
   }
 
   // Send a message via HTTP (backup if WebSocket fails)
-  static Future<ChatMessage> sendMessage(String roomId, String content, String messageType) async {
+  static Future<ChatMessage> sendMessage(
+    String roomId,
+    String content,
+    String messageType,
+  ) async {
     try {
       final headers = await _getHeaders();
       final body = json.encode({
@@ -97,12 +101,14 @@ class ChatService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final List<dynamic> messagesJson = data['messages'] ?? [];
-        
+
         // Get current user ID to determine isMe property
         final userId = localStorage.getItem('userId') ?? '';
-        
+
         return messagesJson.map((json) {
           final message = ChatMessage.fromJson(json);
+          print(message.toJson());
+          print(userId);
           // Set isMe based on current user ID
           return ChatMessage(
             id: message.id,

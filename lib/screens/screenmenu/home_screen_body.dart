@@ -21,7 +21,6 @@ class HomeScreenBody extends StatefulWidget {
 
 class _HomeScreenBodyState extends State<HomeScreenBody> {
   Timer? _timer;
-  final String _token = localStorage.getItem('token') ?? '';
   final EmployeeData employee =
       mockHiredEmployee; // เปลี่ยนเป็น mockNotHiredEmployee เพื่อทดสอบสถานะ notHired
   final ElderlyPerson elderlyPerson = demoElderlyPersons.firstWhere(
