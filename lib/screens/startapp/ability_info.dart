@@ -118,6 +118,7 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
         localStorage.setItem('userId', resp['user_id'].toString());
         localStorage.setItem('token', resp['access_token'].toString());
 
+        localStorage.removeItem('auth_code');
         Navigator.push(
           context,
           MaterialPageRoute(builder: (_) => const CashIncomeScreen()),
