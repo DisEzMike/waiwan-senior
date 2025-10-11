@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+<<<<<<< HEAD
 // intl not needed in this file
 // localstorage not used here; kept elsewhere in the project
+=======
+>>>>>>> ee197ebe873a117152d1d343d34dd277bba520da
 import 'dart:math' as math;
 import 'package:waiwan/services/user_service.dart';
 import 'Status/Employment_data.dart';
