@@ -59,22 +59,11 @@ class _OtpScreenState extends State<OtpScreen> {
   Future<void> _submitOTP() async {
     final phone = widget.phoneNumber;
     final otp = _controllers.map((c) => c.text).join();
-    print('Submitted OTP: $otp');
-
-    // // TODO: validate OTP with backend
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder:
-    //         (context) => const PersonalInfoScreen(),
-    //   ),
-    // );
-
     try {
       final res = await AuthService.verifyOtp(phone, otp);
       if (!res['is_new']) {
         final resp = await AuthService.authentication(res['auth_code'], {});
-        localStorage.setItem('user_data', resp['user_data'].toString());
+        localStorage.setItem('userId', resp['user_id'].toString());
         localStorage.setItem('token', resp['access_token'].toString());
 
         Navigator.pushAndRemoveUntil(
@@ -85,6 +74,7 @@ class _OtpScreenState extends State<OtpScreen> {
       } else {
         localStorage.setItem('is_new', "${res['is_new']}");
         localStorage.setItem("auth_code", res['auth_code']);
+        localStorage.setItem("phone", phone);
 
         Navigator.push(
           context,
@@ -92,12 +82,14 @@ class _OtpScreenState extends State<OtpScreen> {
         );
       }
     } catch (e) {
-      print(e);
       SnackBar snackBar = SnackBar(
-        content: Text('OTP ไม่ถูกต้อง หรือหมดอายุ'),
+        content: Text(e.toString()),
         backgroundColor: Colors.red,
+        duration: const Duration(seconds: 2),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      debugPrint(e.toString());
+      return;
     }
   }
 

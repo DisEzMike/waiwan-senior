@@ -29,7 +29,7 @@ class UserProfile {
   final String current_address;
   final String phone;
   final String gender;
-  final String? imageUrl;
+  final String imageUrl;
 
   UserProfile({
     required this.id,

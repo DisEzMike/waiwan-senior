@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'dart:math' as math;
 import 'package:waiwan/services/user_service.dart';
@@ -22,7 +23,6 @@ class HomeScreenBody extends StatefulWidget {
 
 class _HomeScreenBodyState extends State<HomeScreenBody> {
   Timer? _timer;
-  final String _token = localStorage.getItem('token') ?? '';
   final EmployeeData employee =
       mockHiredEmployee; // เปลี่ยนเป็น mockNotHiredEmployee เพื่อทดสอบสถานะ notHired
   final ElderlyPerson elderlyPerson = demoElderlyPersons.firstWhere(
@@ -40,11 +40,16 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   }
 
   void _setOnlineStatus() async {
-    print("Setting user online status...");
-    Position position = await _determinePosition();
-    await UserService(
-      accessToken: _token,
-    ).setOnline(position.latitude, position.longitude); // เรียกใช้ครั้งแรกทันที
+    try {
+      debugPrint("Setting user online status...");
+      Position position = await _determinePosition();
+      await UserService().setOnline(
+        position.latitude,
+        position.longitude,
+      ); // เรียกใช้ครั้งแรกทันที
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override

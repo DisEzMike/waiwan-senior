@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:waiwan/model/user.dart';
+import 'package:waiwan/screens/startapp/phone_input_screen.dart';
 import 'package:waiwan/services/user_service.dart';
 import 'package:waiwan/utils/font_size_helper.dart';
 import 'edit_profile.dart';
@@ -15,8 +16,7 @@ class ContractorProfile extends StatefulWidget {
 }
 
 class _ContractorProfileState extends State<ContractorProfile> {
-  final String _token = localStorage.getItem('token') ?? '';
-  User? _user = null;
+  User? _user;
 
   @override
   void initState() {
@@ -25,12 +25,36 @@ class _ContractorProfileState extends State<ContractorProfile> {
   }
 
   void _loadProfile() async {
-    final res = await UserService(accessToken: _token).getProfile();
-    if (res != null && mounted) {
-      setState(() {
-        // Update user state with fetched profile data
-        _user = User.fromJson(res);
-      });
+    try {
+      final res = await UserService().getProfile();
+      if (res != null && mounted) {
+        setState(() {
+          // Update user state with fetched profile data
+          _user = User.fromJson(res);
+        });
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+
+        setState(() {
+          _user = null;
+        });
+
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const PhoneInputScreen()),
+          (Route<dynamic> route) => false,
+        );
+      }
     }
   }
 

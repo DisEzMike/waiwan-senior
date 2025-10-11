@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:waiwan/screens/main_screen.dart';
 import 'package:waiwan/screens/startapp/ability_info.dart';
-import 'package:waiwan/services/auth_service.dart';
 import 'package:waiwan/utils/font_size_helper.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
@@ -32,26 +30,16 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args = ModalRoute.of(context)?.settings.arguments;
-    if (args is Map<String, String>) {
-      // fill controllers from parsed id info when available
-      _nameController.text = args['name'] ?? '';
-      _surnameController.text = args['surname'] ?? '';
-      _idAddressController.text = args['id_address'] ?? '';
-      _currentAddressController.text = args['current_address'] ?? '';
-      _phoneController.text = args['phone'] ?? '';
-      _genderController.text = args['gender'] ?? '';
-    } else {
-      // Demo fallback so opening /personal_info directly shows example data
-      _nameController.text = 'สมชาย';
-      _surnameController.text = 'ใจดี';
-      _idAddressController.text =
-          '123/45 หมู่ 6 ต.ตัวอย่าง อ.ตัวอย่าง จ.ตัวอย่าง 12345';
-      _currentAddressController.text =
-          '456 ถนนสุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพมหานคร 10110';
-      _phoneController.text = '0812345678';
-      _genderController.text = 'ชาย';
-    }
+    _phoneController.text = localStorage.getItem('phone') ?? '';
+
+    // _nameController.text = 'สมชาย';
+    // _surnameController.text = 'ใจดี';
+    _idCardController.text = '1234567890123';
+    _idAddressController.text =
+        '123/45 หมู่ 6 ต.ตัวอย่าง อ.ตัวอย่าง จ.ตัวอย่าง 12345';
+    _currentAddressController.text =
+        '456 ถนนสุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพมหานคร 10110';
+    _genderController.text = 'ชาย';
   }
 
   @override
@@ -86,7 +74,8 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AbilityInfoScreen(payload: payload))
+          builder: (context) => AbilityInfoScreen(payload: payload),
+        ),
       );
     }
   }
