@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../widgets/responsive_text.dart';
+import '../../utils/font_size_helper.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
@@ -43,8 +45,8 @@ class NotificationScreen extends StatelessWidget {
         leading: Stack(
           children: [
             Container(
-              width: 50,
-              height: 50,
+              width: FontSizeHelper.getScaledFontSize(50),
+              height: FontSizeHelper.getScaledFontSize(50),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
@@ -58,8 +60,8 @@ class NotificationScreen extends StatelessWidget {
                 right: 0,
                 top: 0,
                 child: Container(
-                  width: 12,
-                  height: 12,
+                  width: FontSizeHelper.getScaledFontSize(12),
+                  height: FontSizeHelper.getScaledFontSize(12),
                   decoration: BoxDecoration(
                     color: Colors.red,
                     shape: BoxShape.circle,
@@ -72,19 +74,15 @@ class NotificationScreen extends StatelessWidget {
               ),
           ],
         ),
-        title: Text(
+        title: ResponsiveText(
           title,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
         ),
-        subtitle: Text(
+        subtitle: ResponsiveText(
           subtitle,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
+          fontSize: 14,
+          color: Colors.grey[600],
         ),
       ),
     );
