@@ -74,6 +74,7 @@ class _OtpScreenState extends State<OtpScreen> {
       } else {
         localStorage.setItem('is_new', "${res['is_new']}");
         localStorage.setItem("auth_code", res['auth_code']);
+        localStorage.setItem("phone", phone);
 
         Navigator.push(
           context,
