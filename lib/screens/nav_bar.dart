@@ -81,24 +81,8 @@ class AppNavigationBar extends StatelessWidget {
           destinations
               .map(
                 (destination) => NavigationDestination(
-                  icon: destination.label == 'แจ้งเตือน'
-                      ? Image.asset(
-                          'assets/icons/bag_green.png',
-                          width: 30,
-                          height: 30,
-                          color: Colors.white,
-                          colorBlendMode: BlendMode.srcIn,
-                        )
-            : Icon(destination.icon),
-                  selectedIcon: destination.label == 'แจ้งเตือน'
-                      ? Image.asset(
-                          'assets/icons/bag_green.png',
-                          width: 30,
-                          height: 30,
-                          color: Colors.black,
-                          colorBlendMode: BlendMode.srcIn,
-                        )
-            : Icon(destination.iconSelected),
+                  icon: Icon(destination.icon),
+                  selectedIcon: Icon(destination.iconSelected),
                   label: destination.label,
                 ),
               )

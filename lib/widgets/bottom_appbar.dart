@@ -46,32 +46,14 @@ class _MyBottomAppBarState extends State<MyBottomAppBar> {
         destinations: destinations
             .map<NavigationDestination>(
               (Destination destination) => NavigationDestination(
-                icon: destination.label == 'แจ้งเตือน'
-                    ? Image.asset(
-                        'assets/icons/bag_green.png',
-                        width: 30,
-                        height: 30,
-                        // unselected -> white
-                        color: Colors.white,
-                        colorBlendMode: BlendMode.srcIn,
-                      )
-                    : Icon(
-                        destination.icon,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                selectedIcon: destination.label == 'แจ้งเตือน'
-                    ? Image.asset(
-                        'assets/icons/bag_green.png',
-                        width: 30,
-                        height: 30,
-                        // selected -> black
-                        color: Colors.black,
-                        colorBlendMode: BlendMode.srcIn,
-                      )
-                    : Icon(
-                        destination.iconSelected,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
+                icon: Icon(
+                  destination.icon,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+                selectedIcon: Icon(
+                  destination.iconSelected,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
                 label: destination.label,
               ),
             )

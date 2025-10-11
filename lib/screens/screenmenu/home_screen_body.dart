@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-// intl not needed in this file
-// localstorage not used here; kept elsewhere in the project
+import 'package:intl/intl.dart';
+import 'package:localstorage/localstorage.dart';
 import 'dart:math' as math;
 import 'package:waiwan/services/user_service.dart';
 import 'Status/Employment_data.dart';
@@ -86,7 +86,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 5),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.secondary,
                 borderRadius: BorderRadius.circular(25),
                 boxShadow: [
                   BoxShadow(
@@ -325,7 +325,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(25),
           boxShadow: [
             BoxShadow(
