@@ -46,22 +46,14 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
     }
   }
 
-  // ⭐️ 1. สร้างฟังก์ชันสำหรับแสดง Dialog แจ้งเตือน
   void _showValidationDialog(String message) {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('ข้อมูลไม่ครบถ้วน'),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('ตกลง'),
-              ),
-            ],
-          ),
+    SnackBar snackBar = SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red,
+      duration: const Duration(seconds: 2),
     );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
   }
 
   // ⭐️ 2. แก้ไขฟังก์ชัน submit ให้มีการตรวจสอบข้อมูล
@@ -100,14 +92,14 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
     if (isFormValid) {
       try {
         // send to backend
-        final work_experience = _jobNameController.text.isNotEmpty
+        final workExperience = _jobNameController.text.isNotEmpty
             ? _jobNameController.text
             : "-";
         final payload = {
           'profile': widget.payload,
           'ability': {
             'type': _selectedOption.toString().split('.').last,
-            'work_experience': work_experience,
+            'work_experience': workExperience,
             'other_ability': _skillsController.text,
             'vehicle': _hasVehicle,
             'offsite_work': _canWorkOffsite,
@@ -124,8 +116,9 @@ class _AbilityInfoScreenState extends State<AbilityInfoScreen> {
           MaterialPageRoute(builder: (_) => const CashIncomeScreen()),
         );
       } catch (e) {
-        // handle error
-        print('Error submitting personal info: $e');
+        _showValidationDialog('เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง');
+        debugPrint(e.toString());
+        return;
       }
       // Navigator.pushNamed(context, '/cash_income');
     } else {

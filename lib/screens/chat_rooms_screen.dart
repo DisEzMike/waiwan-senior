@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
 import 'package:waiwan/model/user.dart';
 import 'package:waiwan/screens/chat.dart';
+import 'package:waiwan/screens/startapp/phone_input_screen.dart';
 import 'package:waiwan/services/user_service.dart';
 
 import '../model/chat_room.dart';
@@ -9,7 +11,7 @@ import '../providers/chat_provider.dart';
 import '../services/chat_service.dart';
 
 class ChatRoomsScreen extends StatefulWidget {
-  const ChatRoomsScreen({Key? key}) : super(key: key);
+  const ChatRoomsScreen({super.key});
 
   @override
   State<ChatRoomsScreen> createState() => _ChatRoomsScreenState();
@@ -56,14 +58,18 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
     await _loadChatRooms();
   }
 
-  void _navigateToChat(ChatRoom chatRoom) async {
-    final res = await UserService().getUserById(chatRoom.userId);
-    final user = User.fromJson(res);
+  void _navigateToChat(User user, ChatRoom chatRoom) async {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ChatScreen(person: user, chatroomId: chatRoom.id),
       ),
+    );
+  }
+
+  void _handleError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
   }
 
@@ -138,14 +144,10 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
                 if (snapshot.hasData) {
                   return snapshot.data!;
                 } else if (snapshot.hasError) {
-                  return ListTile(
-                    title: Text('Error: ${snapshot.error}'),
-                  );
+                  return ListTile(title: Text('Error: ${snapshot.error}'));
                 } else {
                   return const ListTile(
-                    leading: CircleAvatar(
-                      child: CircularProgressIndicator(),
-                    ),
+                    leading: CircleAvatar(child: CircularProgressIndicator()),
                     title: Text('Loading...'),
                   );
                 }
@@ -158,90 +160,94 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
   }
 
   Future<Widget> _buildChatRoomTile(ChatRoom chatRoom) async {
-    final res = await UserService().getUserById(chatRoom.userId);
-    final user = User.fromJson(res);
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(user.profile.imageUrl),
-        radius: 24,
-      ),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            chatRoom.userName,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-          if (chatRoom.jobTitle != null)
+    try {
+      final res = await UserService().getUserById(chatRoom.userId);
+      final user = User.fromJson(res);
+      return ListTile(
+        leading: CircleAvatar(
+          backgroundImage: NetworkImage(user.profile.imageUrl),
+          radius: 24,
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Text(
-              chatRoom.jobTitle!,
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+              chatRoom.userName,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-        ],
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (chatRoom.lastMessageContent != null) ...[
-            Text(
-              chatRoom.lastMessageContent!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.grey.shade700),
-            ),
-            const SizedBox(height: 4),
+            if (chatRoom.jobTitle != null)
+              Text(
+                chatRoom.jobTitle!,
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+              ),
           ],
-          if (chatRoom.lastMessageAt != null)
-            Text(
-              _formatTime(chatRoom.lastMessageAt!),
-              style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
-            ),
-        ],
-      ),
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (chatRoom.unreadCount > 0)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(12),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (chatRoom.lastMessageContent != null) ...[
+              Text(
+                chatRoom.lastMessageContent!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.grey.shade700),
               ),
-              child: Text(
-                chatRoom.unreadCount > 99
-                    ? '99+'
-                    : chatRoom.unreadCount.toString(),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
+              const SizedBox(height: 4),
+            ],
+            if (chatRoom.lastMessageAt != null)
+              Text(
+                _formatTime(chatRoom.lastMessageAt!),
+                style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
               ),
-            ),
-          const SizedBox(height: 4),
-          Consumer<ChatProvider>(
-            builder: (context, chatProvider, child) {
-              final isOnline =
-                  chatProvider.onlineUsers[chatRoom.id]?.contains(
-                    chatRoom.seniorId,
-                  ) ??
-                  false;
-
-              return Container(
-                width: 8,
-                height: 8,
+          ],
+        ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (chatRoom.unreadCount > 0)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isOnline ? Colors.green : Colors.grey,
-                  shape: BoxShape.circle,
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              );
-            },
-          ),
-        ],
-      ),
-      onTap: () => _navigateToChat(chatRoom),
-    );
+                child: Text(
+                  chatRoom.unreadCount > 99
+                      ? '99+'
+                      : chatRoom.unreadCount.toString(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            const SizedBox(height: 4),
+            Consumer<ChatProvider>(
+              builder: (context, chatProvider, child) {
+                final isOnline =
+                    chatProvider.onlineUsers[chatRoom.id]?.contains(
+                      chatRoom.seniorId,
+                    ) ??
+                    false;
+
+                return Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: isOnline ? Colors.green : Colors.grey,
+                    shape: BoxShape.circle,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        onTap: () => _navigateToChat(user, chatRoom),
+      );
+    } catch (e) {
+      return ListTile(title: Text('Error: $e'));
+    }
   }
 
   String _formatTime(DateTime dateTime) {

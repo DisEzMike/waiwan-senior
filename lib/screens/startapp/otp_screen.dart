@@ -82,12 +82,14 @@ class _OtpScreenState extends State<OtpScreen> {
         );
       }
     } catch (e) {
-      print(e);
       SnackBar snackBar = SnackBar(
-        content: Text('OTP ไม่ถูกต้อง หรือหมดอายุ'),
+        content: Text(e.toString()),
         backgroundColor: Colors.red,
+        duration: const Duration(seconds: 2),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      debugPrint(e.toString());
+      return;
     }
   }
 

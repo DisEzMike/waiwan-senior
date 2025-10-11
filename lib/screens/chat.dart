@@ -76,10 +76,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _initializeWebSocket() async {
-    // สร้าง ChatRoom จาก ElderlyPerson data
-    _chatRoom = await ChatService.getChatRoom(widget.chatroomId);
-
     try {
+      _chatRoom = await ChatService.getChatRoom(widget.chatroomId);
       // เชื่อมต่อ WebSocket ผ่าน ChatProvider
       if (_chatProvider != null) {
         await _chatProvider!.connectToRoom(_chatRoom!);
@@ -94,7 +92,14 @@ class _ChatScreenState extends State<ChatScreen> {
         });
       }
     } catch (e) {
-      print('Error initializing WebSocket: $e');
+      final errMsg = e.toString();
+      debugPrint(errMsg);
+      _handleError(errMsg);
+      if (mounted) {
+        setState(() {
+          _isWebSocketInitialized = false;
+        });
+      }
     }
   }
 
@@ -343,6 +348,12 @@ class _ChatScreenState extends State<ChatScreen> {
       elderlyPersonName: widget.person.displayName,
       address: widget.person.profile.current_address,
       onPaymentCompleted: _sendPaymentCompletionMessage,
+    );
+  }
+
+  void _handleError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
     );
   }
 

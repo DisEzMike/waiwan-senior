@@ -31,27 +31,15 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _phoneController.text = localStorage.getItem('phone') ?? '';
-    localStorage.removeItem('phone');
-    // final args = ModalRoute.of(context)?.settings.arguments;
-    // if (args is Map<String, String>) {
-    //   // fill controllers from parsed id info when available
-    //   _nameController.text = args['name'] ?? '';
-    //   _surnameController.text = args['surname'] ?? '';
-    //   _idAddressController.text = args['id_address'] ?? '';
-    //   _currentAddressController.text = args['current_address'] ?? '';
-    //   _phoneController.text = args['phone'] ?? '';
-    //   _genderController.text = args['gender'] ?? '';
-    // } else {
-    //   // Demo fallback so opening /personal_info directly shows example data
-    //   _nameController.text = 'สมชาย';
-    //   _surnameController.text = 'ใจดี';
-    //   _idAddressController.text =
-    //       '123/45 หมู่ 6 ต.ตัวอย่าง อ.ตัวอย่าง จ.ตัวอย่าง 12345';
-    //   _currentAddressController.text =
-    //       '456 ถนนสุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพมหานคร 10110';
-    //   _phoneController.text = '0812345678';
-    //   _genderController.text = 'ชาย';
-    // }
+
+    // _nameController.text = 'สมชาย';
+    // _surnameController.text = 'ใจดี';
+    _idCardController.text = '1234567890123';
+    _idAddressController.text =
+        '123/45 หมู่ 6 ต.ตัวอย่าง อ.ตัวอย่าง จ.ตัวอย่าง 12345';
+    _currentAddressController.text =
+        '456 ถนนสุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพมหานคร 10110';
+    _genderController.text = 'ชาย';
   }
 
   @override

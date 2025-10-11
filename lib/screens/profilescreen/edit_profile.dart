@@ -6,7 +6,7 @@ import '../../widgets/user_profile/save_button.dart';
 
 class EditProfile extends StatefulWidget {
   final User user;
-  EditProfile({super.key, required this.user});
+  const EditProfile({super.key, required this.user});
 
   @override
   State<EditProfile> createState() => _EditProfileState();

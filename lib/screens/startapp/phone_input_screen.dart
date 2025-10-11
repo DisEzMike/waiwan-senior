@@ -67,10 +67,11 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
     } catch (e) {
       // Show error dialog
       SnackBar snackBar = SnackBar(
-        content: Text('Error: $e'),
+        content: Text('ไม่สามารถส่งรหัส OTP ได้ กรุณาลองใหม่อีกครั้ง'),
         duration: const Duration(seconds: 3),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      debugPrint(e.toString());
       return;
     }
   }
