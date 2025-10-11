@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:intl/intl.dart';
-import 'package:localstorage/localstorage.dart';
 import 'dart:math' as math;
 import 'package:waiwan/services/user_service.dart';
 import 'Status/Employment_data.dart';
