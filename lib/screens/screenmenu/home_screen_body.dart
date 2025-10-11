@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:waiwan/services/user_service.dart';
 import 'Status/Employment_data.dart';
 import 'Status/JobStatus.dart';

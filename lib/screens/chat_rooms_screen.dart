@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
 import 'package:waiwan/model/user.dart';
 import 'package:waiwan/screens/chat.dart';
-import 'package:waiwan/screens/startapp/phone_input_screen.dart';
 import 'package:waiwan/services/user_service.dart';
 
 import '../model/chat_room.dart';
@@ -64,12 +62,6 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
       MaterialPageRoute(
         builder: (context) => ChatScreen(person: user, chatroomId: chatRoom.id),
       ),
-    );
-  }
-
-  void _handleError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
     );
   }
 

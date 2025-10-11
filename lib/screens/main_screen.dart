@@ -4,7 +4,6 @@ import 'package:waiwan/screens/screenmenu/home_screen_body.dart';
 import 'nav_bar.dart';
 import 'profilescreen/contractor_profile.dart';
 import 'notificationscreen/notification.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
 // Make sure the class name in contractor_profile.dart matches 'ContractorProfilePage'
 
 class MyMainPage extends StatelessWidget {
@@ -33,24 +32,6 @@ class MyMainPage extends StatelessWidget {
           builder: (context) => ContractorProfile(),
         ),
       ],
-    );
-  }
-}
-
-class _TextPlaceholder extends StatelessWidget {
-  final String text;
-
-  const _TextPlaceholder(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        text,
-        style: FontSizeHelper.createTextStyle(
-          fontSize: 18,
-        ),
-      ),
     );
   }
 }
