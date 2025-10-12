@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:waiwan/model/user.dart';
+import 'package:waiwan/model/elderly_person.dart';
 import '../../widgets/user_profile/edit_profile_image.dart';
 import '../../widgets/user_profile/profile_form.dart';
 import '../../widgets/user_profile/save_button.dart';
 
 class EditProfile extends StatefulWidget {
-  final User user;
+  final ElderlyPerson user;
   const EditProfile({super.key, required this.user});
 
   @override
@@ -45,7 +45,7 @@ class _EditProfileState extends State<EditProfile> {
 
     // _idCardController.text = profile.idCard ?? '';
     // _idAddressController.text = profile.idAddress ?? '';
-    _currentAddressController.text = profile.current_address;
+    _currentAddressController.text = profile.currentAddress;
     _phoneController.text = profile.phone;
     // _genderController.text
   }

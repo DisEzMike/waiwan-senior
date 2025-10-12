@@ -61,7 +61,7 @@ class _CashIncomeScreenState extends State<CashIncomeScreen> {
     } else {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const MyMainPage()),
+        MaterialPageRoute(builder: (_) => MyMainPage()),
         (route) => false,
       );
     }

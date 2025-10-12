@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:waiwan/utils/font_size_helper.dart';
 
 class JobCompletedScreen extends StatelessWidget {
   final Map<String, dynamic> jobData;
 
-  const JobCompletedScreen({
-    super.key,
-    required this.jobData,
-  });
+  const JobCompletedScreen({super.key, required this.jobData});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightGreen[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'สถานะงาน',
-          style: TextStyle(
+          style: FontSizeHelper.createTextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -60,31 +58,35 @@ class JobCompletedScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Progress Steps (ครบทั้ง 4 steps)
                   _buildCompletedProgressSteps(context),
-                  
+
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 20),
-                  
+
                   // ข้อมูลผู้จ้าง
                   Text(
                     'ผู้จ้าง',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 12),
-                  
+
                   Row(
                     children: [
                       CircleAvatar(
                         radius: 28,
                         backgroundColor: Colors.grey[300],
-                        child: Icon(Icons.person, color: Colors.grey[600], size: 32),
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.grey[600],
+                          size: 32,
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Column(
@@ -92,7 +94,7 @@ class JobCompletedScreen extends StatelessWidget {
                         children: [
                           Text(
                             jobData['employerName'] ?? 'นายกาย',
-                            style: TextStyle(
+                            style: FontSizeHelper.createTextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
@@ -100,7 +102,7 @@ class JobCompletedScreen extends StatelessWidget {
                           ),
                           Text(
                             'เบอร์โทร: 0945741297',
-                            style: TextStyle(
+                            style: FontSizeHelper.createTextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Colors.blue,
@@ -110,11 +112,11 @@ class JobCompletedScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 20),
-                  
+
                   // รายละเอียดงาน
                   _buildDetailRow(
                     'วันที่:',
@@ -130,7 +132,7 @@ class JobCompletedScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   _buildDetailRow(
                     'งานที่จ้าง',
-                    jobData['jobType'] ?? 'จัดสถานที่',
+                    jobData['title'] ?? 'จัดสถานที่',
                     Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(height: 12),
@@ -139,9 +141,9 @@ class JobCompletedScreen extends StatelessWidget {
                     jobData['jobType'] ?? 'จัดสถานที่',
                     Colors.black,
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // ปุ่ม "เสร็จสิ้น" สีเขียว
                   Container(
                     width: double.infinity,
@@ -159,7 +161,7 @@ class JobCompletedScreen extends StatelessWidget {
                       ),
                       child: Text(
                         'เสร็จสิ้น',
-                        style: TextStyle(
+                        style: FontSizeHelper.createTextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
@@ -167,15 +169,15 @@ class JobCompletedScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 20),
-                  
+
                   // สถานที่ทำงาน
                   Text(
                     'สถานที่ทำงาน',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -184,7 +186,7 @@ class JobCompletedScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     '88/1 ลลองกรง 1 แขวงลาดกระบัง เขตลาดกระบัง กรุงเทพมหานคร 10520',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -199,15 +201,11 @@ class JobCompletedScreen extends StatelessWidget {
                     },
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.location_pin,
-                          size: 24,
-                          color: Colors.blue,
-                        ),
+                        Icon(Icons.location_pin, size: 24, color: Colors.blue),
                         const SizedBox(width: 6),
                         Text(
                           'เปิดแผนที่',
-                          style: TextStyle(
+                          style: FontSizeHelper.createTextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w600,
                             color: Colors.blue,
@@ -234,15 +232,15 @@ class JobCompletedScreen extends StatelessWidget {
           // Step 1 - User (สีเขียว - completed)
           _buildStep(Icons.person, true, true, context),
           _buildConnector(true, context),
-          
+
           // Step 2 - Coin (สีเขียว - completed)
           _buildStep(Icons.monetization_on, true, true, context),
           _buildConnector(true, context),
-          
+
           // Step 3 - Computer (สีเขียว - completed)
           _buildStep(Icons.computer, true, true, context),
           _buildConnector(true, context),
-          
+
           // Step 4 - Check (สีเขียว - completed)
           _buildStep(Icons.check, true, true, context),
         ],
@@ -250,14 +248,20 @@ class JobCompletedScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStep(IconData icon, bool isActive, bool isCompleted, BuildContext context) {
+  Widget _buildStep(
+    IconData icon,
+    bool isActive,
+    bool isCompleted,
+    BuildContext context,
+  ) {
     return Container(
       width: 50,
       height: 50,
       decoration: BoxDecoration(
-        color: isActive || isCompleted 
-            ? Theme.of(context).colorScheme.primary 
-            : Colors.grey[300],
+        color:
+            isActive || isCompleted
+                ? Theme.of(context).colorScheme.primary
+                : Colors.grey[300],
         shape: BoxShape.circle,
       ),
       child: Icon(
@@ -272,9 +276,8 @@ class JobCompletedScreen extends StatelessWidget {
     return Container(
       width: 30,
       height: 2,
-      color: isActive 
-          ? Theme.of(context).colorScheme.primary 
-          : Colors.grey[300],
+      color:
+          isActive ? Theme.of(context).colorScheme.primary : Colors.grey[300],
     );
   }
 
@@ -282,20 +285,24 @@ class JobCompletedScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.grey[600],
-            fontWeight: FontWeight.w600,
+        Flexible(
+          child: Text(
+            label,
+            style: FontSizeHelper.createTextStyle(
+              fontSize: 18,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: valueColor,
+        Flexible(
+          child: Text(
+            value,
+            style: FontSizeHelper.createTextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: valueColor,
+            ),
           ),
         ),
       ],

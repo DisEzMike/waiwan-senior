@@ -27,7 +27,7 @@ class _PhoneInputScreenState extends State<PhoneInputScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const MyMainPage()),
+          MaterialPageRoute(builder: (context) => MyMainPage()),
           (route) => false,
         );
       });

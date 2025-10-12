@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:waiwan/model/user.dart';
+import 'package:waiwan/model/elderly_person.dart';
 import 'package:waiwan/screens/startapp/phone_input_screen.dart';
 import 'package:waiwan/services/user_service.dart';
 import 'package:waiwan/utils/font_size_helper.dart';
@@ -9,54 +9,53 @@ import '../../widgets/user_profile/profile_header.dart';
 import '../../widgets/user_profile/menu_items.dart';
 
 class ContractorProfile extends StatefulWidget {
-  const ContractorProfile({super.key});
+  final ElderlyPerson user;
+  const ContractorProfile({super.key, required this.user});
 
   @override
   State<ContractorProfile> createState() => _ContractorProfileState();
 }
 
 class _ContractorProfileState extends State<ContractorProfile> {
-  User? _user;
-
   @override
   void initState() {
     super.initState();
-    _loadProfile();
+    // _loadProfile();
   }
 
-  void _loadProfile() async {
-    try {
-      final res = await UserService().getProfile();
-      if (res != null && mounted) {
-        setState(() {
-          // Update user state with fetched profile data
-          _user = User.fromJson(res);
-        });
-      }
-    } catch (e) {
-      debugPrint(e.toString());
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+  // void _loadProfile() async {
+  //   try {
+  //     final senior = await UserService().getProfile();
+  //     if (mounted) {
+  //       setState(() {
+  //         // Update user state with fetched profile data
+  //         _user = senior;
+  //       });
+  //     }
+  //   } catch (e) {
+  //     debugPrint(e.toString());
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล: $e'),
+  //           backgroundColor: Colors.red,
+  //         ),
+  //       );
 
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
+  //       localStorage.removeItem('token');
+  //       localStorage.removeItem('userId');
 
-        setState(() {
-          _user = null;
-        });
+  //       setState(() {
+  //         _user = null;
+  //       });
 
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const PhoneInputScreen()),
-          (Route<dynamic> route) => false,
-        );
-      }
-    }
-  }
+  //       Navigator.of(context).pushAndRemoveUntil(
+  //         MaterialPageRoute(builder: (context) => const PhoneInputScreen()),
+  //         (Route<dynamic> route) => false,
+  //       );
+  //     }
+  //   }
+  // }
 
   void _logout() async {
     // Show confirmation dialog
@@ -160,16 +159,14 @@ class _ContractorProfileState extends State<ContractorProfile> {
                   children: [
                     // Profile info section
                     ProfileHeader(
-                      name: '${_user?.displayName}',
+                      name: widget.user.displayName,
                       subtitle: 'แก้ไขข้อมูลส่วนตัว',
-                      imageAsset:
-                          _user?.profile.imageUrl ??
-                          'https://placehold.co/600x400.png',
+                      imageAsset: widget.user.profile.imageUrl,
                       onEditPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => EditProfile(user: _user!),
+                            builder: (context) => EditProfile(user: widget.user),
                           ),
                         );
                       },

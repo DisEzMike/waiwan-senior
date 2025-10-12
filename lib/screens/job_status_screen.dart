@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:waiwan/screens/job_completed_screen.dart';
+import 'package:waiwan/utils/font_size_helper.dart';
 
 class JobStatusScreen extends StatefulWidget {
   final Map<String, dynamic> jobData;
 
-  const JobStatusScreen({
-    super.key,
-    required this.jobData,
-  });
+  const JobStatusScreen({super.key, required this.jobData});
 
   @override
   State<JobStatusScreen> createState() => _JobStatusScreenState();
@@ -19,9 +17,9 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
     return Scaffold(
       backgroundColor: Colors.lightGreen[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'สถานะงาน',
-          style: TextStyle(
+          style: FontSizeHelper.createTextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -59,38 +57,42 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                   // หัวข้อรอผู้จ้างชำระเงิน
                   Text(
                     'อยู่ในช่วงการดำเนินงาน',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Progress Steps
                   _buildProgressSteps(),
-                  
+
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 20),
-                  
+
                   // ข้อมูลผู้จ้าง
                   Text(
                     'ผู้จ้าง',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 12),
-                  
+
                   Row(
                     children: [
                       CircleAvatar(
                         radius: 28,
                         backgroundColor: Colors.grey[300],
-                        child: Icon(Icons.person, color: Colors.grey[600], size: 32),
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.grey[600],
+                          size: 32,
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Column(
@@ -98,7 +100,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                         children: [
                           Text(
                             widget.jobData['employerName'] ?? 'นายกาย',
-                            style: TextStyle(
+                            style: FontSizeHelper.createTextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
@@ -106,7 +108,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                           ),
                           Text(
                             'เบอร์โทร: 0945741297',
-                            style: TextStyle(
+                            style: FontSizeHelper.createTextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                               color: Colors.blue,
@@ -116,11 +118,11 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 20),
-                  
+
                   // รายละเอียดงาน
                   _buildDetailRow(
                     'วันที่:',
@@ -136,7 +138,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                   const SizedBox(height: 12),
                   _buildDetailRow(
                     'งานที่จ้าง',
-                    widget.jobData['jobType'] ?? 'จัดสถานที่',
+                    widget.jobData['title'] ?? 'จัดสถานที่',
                     Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(height: 12),
@@ -145,9 +147,9 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                     widget.jobData['jobType'] ?? 'จัดสถานที่',
                     Colors.black,
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // ปุ่มควบคุม
                   Row(
                     children: [
@@ -183,14 +185,16 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => JobCompletedScreen(
-                                  jobData: widget.jobData,
-                                ),
+                                builder:
+                                    (context) => JobCompletedScreen(
+                                      jobData: widget.jobData,
+                                    ),
                               ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -208,15 +212,15 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 20),
-                  
+
                   // สถานที่ทำงาน
                   Text(
                     'สถานที่ทำงาน',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -225,7 +229,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                   const SizedBox(height: 8),
                   Text(
                     '88/1 ลลองกรง 1 แขวงลาดกระบัง เขตลาดกระบัง กรุงเทพมหานคร 10520',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -276,15 +280,15 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
           // Step 1 - User (สีเขียว - active)
           _buildStep(Icons.person, true, true),
           _buildConnector(true),
-          
+
           // Step 2 - Coin (สีเขียว - active)
           _buildStep(Icons.monetization_on, true, true),
           _buildConnector(true),
-          
+
           // Step 3 - Person at computer (สีเขียว - active)
           _buildStep(Icons.computer, true, true),
           _buildConnector(false),
-          
+
           // Step 4 - Check (เทา - inactive)
           _buildStep(Icons.check, false, false),
         ],
@@ -297,9 +301,10 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
       width: 50,
       height: 50,
       decoration: BoxDecoration(
-        color: isActive || isCompleted 
-            ? Theme.of(context).colorScheme.primary 
-            : Colors.grey[300],
+        color:
+            isActive || isCompleted
+                ? Theme.of(context).colorScheme.primary
+                : Colors.grey[300],
         shape: BoxShape.circle,
       ),
       child: Icon(
@@ -314,9 +319,8 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
     return Container(
       width: 30,
       height: 2,
-      color: isActive 
-          ? Theme.of(context).colorScheme.primary 
-          : Colors.grey[300],
+      color:
+          isActive ? Theme.of(context).colorScheme.primary : Colors.grey[300],
     );
   }
 
@@ -324,20 +328,24 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey[600],
-            fontWeight: FontWeight.w600,
+        Flexible(
+          child: Text(
+            label,
+            style: FontSizeHelper.createTextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: valueColor,
+        Flexible(
+          child: Text(
+            value,
+            style: FontSizeHelper.createTextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: valueColor,
+            ),
           ),
         ),
       ],

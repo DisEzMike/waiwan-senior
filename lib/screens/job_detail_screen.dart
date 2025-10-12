@@ -15,9 +15,9 @@ class JobDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.lightGreen[100],
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'รายละเอียดงาน',
-          style: TextStyle(
+          style: FontSizeHelper.createTextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -54,7 +54,7 @@ class JobDetailScreen extends StatelessWidget {
                 children: [
                   Text(
                     'รายละเอียด',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -67,7 +67,7 @@ class JobDetailScreen extends StatelessWidget {
                     children: [
                       Text(
                         'ผู้จ้าง',
-                        style: TextStyle(
+                        style: FontSizeHelper.createTextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
                           color: Colors.black,
@@ -89,7 +89,7 @@ class JobDetailScreen extends StatelessWidget {
                         children: [
                           Text(
                             jobData['employerName'] ?? 'นายกาย',
-                            style: TextStyle(
+                            style: FontSizeHelper.createTextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
@@ -97,7 +97,7 @@ class JobDetailScreen extends StatelessWidget {
                           ),
                           Text(
                             'เบอร์โทร: 0945741297',
-                            style: TextStyle(
+                            style: FontSizeHelper.createTextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.blue,
@@ -135,7 +135,7 @@ class JobDetailScreen extends StatelessWidget {
                   // รายละเอียดงาน
                   Text(
                     'รายละเอียดงาน',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -144,7 +144,7 @@ class JobDetailScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     jobData['jobType'] ?? 'ทำงาน',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -168,7 +168,7 @@ class JobDetailScreen extends StatelessWidget {
                   // สถานที่ทำงาน
                   Text(
                     'สถานที่ทำงาน',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -177,7 +177,7 @@ class JobDetailScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     '88/1 ลลองกรง 1 แขวงลาดกระบัง เขตลาดกระบัง กรุงเทพมหานคร',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
@@ -190,13 +190,13 @@ class JobDetailScreen extends StatelessWidget {
             const SizedBox(height: 20),
             
             // ปุ่มตอบรับ
-            Row(
+            if (jobData['applicationStatus'] == "pending") Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
                       // ปุ่มไม่สนใจ - กลับไปหน้า job_screen และไปที่ tab ยกเลิก/ปฏิเสธ
-                      Navigator.pop(context, 3); // ส่ง index 3 กลับไป
+                      Navigator.pop(context, 4); // ส่ง index 3 กลับไป
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
@@ -207,8 +207,8 @@ class JobDetailScreen extends StatelessWidget {
                     ),
                     child: Text(
                       'ไม่สนใจ',
-                      style: TextStyle(
-                        fontSize: FontSizeHelper.getScaledFontSize(16),
+                      style: FontSizeHelper.createTextStyle(
+                        fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -238,7 +238,7 @@ class JobDetailScreen extends StatelessWidget {
                     ),
                     child: Text(
                       'ยืนยัน',
-                      style: TextStyle(
+                      style: FontSizeHelper.createTextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
@@ -248,6 +248,8 @@ class JobDetailScreen extends StatelessWidget {
                 ),
               ],
             ),
+
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -258,20 +260,24 @@ class JobDetailScreen extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.grey[600],
-            fontWeight: FontWeight.w600,
+        Flexible(
+          child: Text(
+            label,
+            style: FontSizeHelper.createTextStyle(
+              fontSize: 18,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: valueColor,
+        Flexible(
+          child: Text(
+            value,
+            style: FontSizeHelper.createTextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: valueColor,
+            ),
           ),
         ),
       ],
