@@ -262,6 +262,7 @@ class _JobScreenState extends State<JobScreen> {
     required String salary,
     required String status,
     required String applicationStatus,
+    String? chatRoomId
   }) {
     return Consumer<FontSizeProvider>(
       builder: (context, fontProvider, child) {
@@ -284,6 +285,7 @@ class _JobScreenState extends State<JobScreen> {
                                 'salary': salary,
                                 'status': status,
                                 'applicationStatus': applicationStatus,
+                                'chatRoomId': chatRoomId ?? ""
                               },
                             )
                             : JobStatusScreen(
@@ -295,6 +297,7 @@ class _JobScreenState extends State<JobScreen> {
                                 'jobType': jobType,
                                 'salary': salary,
                                 'status': status,
+                                'chatRoomId': chatRoomId ?? ""
                               },
                             ),
               ),
@@ -448,6 +451,7 @@ class _JobScreenState extends State<JobScreen> {
                               salary: "฿${job.price.toStringAsFixed(2)}",
                               status: job.status,
                               applicationStatus: job.applicationStatus,
+                              chatRoomId: job.chatRoomId
                             );
                           }).toList(),
                     ),
@@ -487,6 +491,7 @@ class _JobScreenState extends State<JobScreen> {
                                 salary: "฿${job.price.toStringAsFixed(2)}",
                                 status: job.status,
                                 applicationStatus: job.applicationStatus,
+                                chatRoomId: job.chatRoomId
                               ),
                             );
                           }).toList(),
@@ -526,6 +531,7 @@ class _JobScreenState extends State<JobScreen> {
                               salary: "฿${job.price.toStringAsFixed(2)}",
                               status: job.status,
                               applicationStatus: job.applicationStatus,
+                              chatRoomId: job.chatRoomId
                             ),
                           );
                         }).toList(),
@@ -566,6 +572,7 @@ class _JobScreenState extends State<JobScreen> {
                                 salary: "฿${job.price.toStringAsFixed(2)}",
                                 status: job.status,
                                 applicationStatus: job.applicationStatus,
+                                chatRoomId: job.chatRoomId
                               ),
                             );
                           }).toList(),

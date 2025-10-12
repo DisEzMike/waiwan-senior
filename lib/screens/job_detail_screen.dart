@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:waiwan/screens/chat.dart';
 import 'package:waiwan/utils/font_size_helper.dart';
 import 'package:waiwan/screens/job_status_screen.dart';
 
 class JobDetailScreen extends StatelessWidget {
   final Map<String, String> jobData;
 
-  const JobDetailScreen({
-    super.key,
-    required this.jobData,
-  });
+  const JobDetailScreen({super.key, required this.jobData});
 
   @override
   Widget build(BuildContext context) {
@@ -61,16 +59,18 @@ class JobDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // ผู้จ้าง
                   Row(
                     children: [
-                      Text(
-                        'ผู้จ้าง',
-                        style: FontSizeHelper.createTextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
+                      Flexible(
+                        child: Text(
+                          'ผู้จ้าง',
+                          style: FontSizeHelper.createTextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ],
@@ -107,11 +107,47 @@ class JobDetailScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
+                  const SizedBox(height: 20),
+                  if (jobData['status'] == 'accepted')
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // ปุ่มยืนยัน - เด้งไปหน้าสถานะงาน
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          ChatScreen(chatroomId: jobData['chatRoomId']!,),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Text(
+                              'แชท',
+                              style: FontSizeHelper.createTextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 20),
-                  
+
                   // วันที่และเวลา
                   _buildDetailRow(
                     'วันที่:',
@@ -131,7 +167,7 @@ class JobDetailScreen extends StatelessWidget {
                     Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // รายละเอียดงาน
                   Text(
                     'รายละเอียดงาน',
@@ -151,7 +187,7 @@ class JobDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // ราคาที่จ้าง
                   _buildDetailRow(
                     'ราคาที่จ้าง',
@@ -160,11 +196,11 @@ class JobDetailScreen extends StatelessWidget {
                     isPrice: true,
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // เส้นคั่น
                   const Divider(),
                   const SizedBox(height: 20),
-                  
+
                   // สถานที่ทำงาน
                   Text(
                     'สถานที่ทำงาน',
@@ -186,68 +222,68 @@ class JobDetailScreen extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 20),
-            
+
             // ปุ่มตอบรับ
-            if (jobData['applicationStatus'] == "pending") Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // ปุ่มไม่สนใจ - กลับไปหน้า job_screen และไปที่ tab ยกเลิก/ปฏิเสธ
-                      Navigator.pop(context, 4); // ส่ง index 3 กลับไป
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: Text(
-                      'ไม่สนใจ',
-                      style: FontSizeHelper.createTextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // ปุ่มยืนยัน - เด้งไปหน้าสถานะงาน
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => JobStatusScreen(
-                            jobData: jobData,
-                          ),
+            if (jobData['applicationStatus'] == "pending")
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // ปุ่มไม่สนใจ - กลับไปหน้า job_screen และไปที่ tab ยกเลิก/ปฏิเสธ
+                        Navigator.pop(context, 4); // ส่ง index 3 กลับไป
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ),
-                    child: Text(
-                      'ยืนยัน',
-                      style: FontSizeHelper.createTextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                      child: Text(
+                        'ไม่สนใจ',
+                        style: FontSizeHelper.createTextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // ปุ่มยืนยัน - เด้งไปหน้าสถานะงาน
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => JobStatusScreen(jobData: jobData),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'ยืนยัน',
+                        style: FontSizeHelper.createTextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
 
             const SizedBox(height: 20),
           ],
@@ -256,7 +292,12 @@ class JobDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value, Color valueColor, {bool isPrice = false}) {
+  Widget _buildDetailRow(
+    String label,
+    String value,
+    Color valueColor, {
+    bool isPrice = false,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

@@ -165,6 +165,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                         'title': currentJob!.title,
                         'jobType': currentJob!.description,
                         'salary': '฿${currentJob!.price.toStringAsFixed(2)}',
+                        'status': currentJob!.status,
+                        'chatRoomId': currentJob!.chatRoomId
                       },
                     ),
               ),

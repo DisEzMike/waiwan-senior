@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waiwan/screens/chat.dart';
 import 'package:waiwan/screens/job_completed_screen.dart';
 import 'package:waiwan/utils/font_size_helper.dart';
 
@@ -119,6 +120,43 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                     ],
                   ),
 
+                  const SizedBox(height: 20),
+                  if (widget.jobData['status'] == 'in_progress')
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // ปุ่มยืนยัน - เด้งไปหน้าสถานะงาน
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => ChatScreen(
+                                        chatroomId: widget.jobData['chatRoomId']!,
+                                      ),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: Text(
+                              'แชท',
+                              style: FontSizeHelper.createTextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   const SizedBox(height: 20),
                   const Divider(),
                   const SizedBox(height: 20),
@@ -245,11 +283,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                     },
                     child: Row(
                       children: [
-                        Icon(
-                          Icons.location_pin,
-                          size: 24,
-                          color: Colors.blue,
-                        ),
+                        Icon(Icons.location_pin, size: 24, color: Colors.blue),
                         const SizedBox(width: 6),
                         Text(
                           'เปิดแผนที่',
