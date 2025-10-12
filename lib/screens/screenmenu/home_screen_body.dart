@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
 import 'package:waiwan/providers/font_size_provider.dart';
 import 'dart:math' as math;
@@ -506,7 +505,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                               ),
                               Flexible(
                                 child: ResponsiveText(
-                                  '${employee.currentJob!.employerName}',
+                                  employee.currentJob!.employerName,
                                   fontSize: 16,
                                   color: Colors.grey[700],
                                   fontWeight: FontWeight.w600,
