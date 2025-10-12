@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:provider/provider.dart';
+import 'package:waiwan/providers/font_size_provider.dart';
 import 'dart:math' as math;
 import 'package:waiwan/services/user_service.dart';
 import 'package:waiwan/screens/job_status_screen.dart';
@@ -76,250 +77,312 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          // กำหนดให้ทุก Widget ใน Column นี้จัดชิดซ้าย
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // --- Existing Profile Card Container (ตอนนี้รวมทุกอย่างไว้ด้านในแล้ว) ---
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 5),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(25),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.4),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
+    return Consumer<FontSizeProvider>(
+      builder: (context, fontSizeProvider, child) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Column(
+              // กำหนดให้ทุก Widget ใน Column นี้จัดชิดซ้าย
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // --- Existing Profile Card Container (ตอนนี้รวมทุกอย่างไว้ด้านในแล้ว) ---
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.4),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: Padding(
-                // เพิ่ม Padding 20.0 ภายใน Container
-                padding: const EdgeInsets.all(20.0),
-                // *** เปลี่ยนจาก Row เป็น Column เพื่อจัดเรียงเนื้อหาในแนวตั้ง ***
-                child: LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                  // compute caps relative to available width to avoid overflow
-                  final maxWidth = constraints.maxWidth.isFinite && constraints.maxWidth > 0
-                      ? constraints.maxWidth
-                      : MediaQuery.of(context).size.width;
+                  child: Padding(
+                    // เพิ่ม Padding 20.0 ภายใน Container
+                    padding: const EdgeInsets.all(20.0),
+                    // *** เปลี่ยนจาก Row เป็น Column เพื่อจัดเรียงเนื้อหาในแนวตั้ง ***
+                    child: LayoutBuilder(
+                      builder: (
+                        BuildContext context,
+                        BoxConstraints constraints,
+                      ) {
+                        // compute caps relative to available width to avoid overflow
+                        final maxWidth =
+                            constraints.maxWidth.isFinite &&
+                                    constraints.maxWidth > 0
+                                ? constraints.maxWidth
+                                : MediaQuery.of(context).size.width;
 
-                  final avatarSize = math.min(
-                      FontSizeHelper.getScaledFontSize(110), maxWidth * 0.28);
-                  final smallIconSize = math.min(
-                      FontSizeHelper.getScaledFontSize(40), maxWidth * 0.12);
+                        final avatarSize = math.min(
+                          FontSizeHelper.getScaledFontSize(110),
+                          maxWidth * 0.28,
+                        );
+                        final smallIconSize = math.min(
+                          FontSizeHelper.getScaledFontSize(40),
+                          maxWidth * 0.12,
+                        );
 
-                  final greetingFont = math.min(FontSizeHelper.getScaledFontSize(20), maxWidth * 0.06);
-                  final nameFont = math.min(FontSizeHelper.getScaledFontSize(24), maxWidth * 0.08);
-                  final labelFont = math.min(FontSizeHelper.getScaledFontSize(16), maxWidth * 0.05);
+                        final greetingFont = math.min(
+                          FontSizeHelper.getScaledFontSize(20),
+                          maxWidth * 0.06,
+                        );
+                        final nameFont = math.min(
+                          FontSizeHelper.getScaledFontSize(24),
+                          maxWidth * 0.08,
+                        );
+                        final labelFont = math.min(
+                          FontSizeHelper.getScaledFontSize(16),
+                          maxWidth * 0.05,
+                        );
 
-                  return Column(
-                      children: [
-                    // 1. ส่วนเดิม: รูปภาพและรายละเอียด (ยังคงใช้ Row จัดเรียงแนวนอน)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // --- Profile Image ---
-                        Container(
-                          width: avatarSize,
-                          height: avatarSize,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.5),
-                                blurRadius: 10,
-                                offset: const Offset(0, 5),
+                        return Column(
+                          children: [
+                            // 1. ส่วนเดิม: รูปภาพและรายละเอียด (ยังคงใช้ Row จัดเรียงแนวนอน)
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // --- Profile Image ---
+                                Container(
+                                  width: avatarSize,
+                                  height: avatarSize,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.5),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 5),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipOval(
+                                    child: Image.asset(
+                                      elderlyPerson.imageUrl,
+                                      width: avatarSize,
+                                      height: avatarSize,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(
+                                  width: 20,
+                                ), // ตัวเว้นระยะห่างระหว่างรูปกับข้อความ
+                                // --- Text Details ---
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ResponsiveText(
+                                        'สวัสดีตอนเช้า !!!',
+                                        fontSize: greetingFont,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color.fromRGBO(125, 125, 125, 1),
+                                      ),
+
+                                      ResponsiveText(
+                                        elderlyPerson.name,
+                                        fontSize: nameFont,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color.fromRGBO(56, 139, 18, 1),
+                                      ),
+                                      SizedBox(
+                                        height: FontSizeHelper.getScaledFontSize(
+                                          4,
+                                        ),
+                                      ),
+                                      ResponsiveText(
+                                        'SKILLS',
+                                        fontSize: labelFont,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color.fromRGBO(125, 125, 125, 1),
+                                      ),
+                                      ResponsiveText(
+                                        'ทำอาหาร',
+                                        fontSize: labelFont,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color.fromRGBO(125, 125, 125, 1),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ), // ปิด Row ส่วนโปรไฟล์เดิม
+                            // 2. ตัวเว้นระยะห่างระหว่างส่วนบนกับส่วนล่าง
+                            const SizedBox(height: 10),
+
+                            // 3. ส่วนใหม่: สถิติแบบ 2 คอลัมน์
+                            Container(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                children: [
+                                  // แถวแรก: รายได้และทิป
+                                  Row(
+                                    children: [
+                                      // รายได้วันนี้
+                                      Expanded(
+                                        child: Row(
+                                          // mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'assets/icons/cash.png',
+                                              width: smallIconSize,
+                                              height: smallIconSize,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Flexible(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  ResponsiveText(
+                                                    '500.00',
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                                  ),
+                                                  ResponsiveText(
+                                                    'รายได้วันนี้',
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Color.fromRGBO(
+                                                      125,
+                                                      125,
+                                                      125,
+                                                      1,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      // ทิปวันนี้
+                                      Expanded(
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'assets/icons/tip.png',
+                                              width: smallIconSize,
+                                              height: smallIconSize,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Flexible(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  ResponsiveText(
+                                                    '50',
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Color.fromRGBO(
+                                                      78,
+                                                      127,
+                                                      233,
+                                                      1,
+                                                    ),
+                                                  ),
+                                                  ResponsiveText(
+                                                    'ทิปวันนี้',
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Color.fromRGBO(
+                                                      125,
+                                                      125,
+                                                      125,
+                                                      1,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 20),
+                                  // แถวที่สอง: คะแนนรีวิว (กึ่งกลาง)
+                                  Row(
+                                    // mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image.asset(
+                                        'assets/icons/star.png',
+                                        width: smallIconSize,
+                                        height: smallIconSize,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          ResponsiveText(
+                                            '4.60',
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700,
+                                            color: Color.fromRGBO(
+                                              242,
+                                              179,
+                                              64,
+                                              1,
+                                            ),
+                                          ),
+                                          ResponsiveText(
+                                            'คะแนนรีวิว',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700,
+                                            color: Color.fromRGBO(
+                                              125,
+                                              125,
+                                              125,
+                                              1,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          child: ClipOval(
-                            child: Image.asset(
-                              elderlyPerson.imageUrl,
-                              width: avatarSize,
-                              height: avatarSize,
-                              fit: BoxFit.cover,
                             ),
-                          ),
-                        ),
-
-                        const SizedBox(
-                          width: 20,
-                        ), // ตัวเว้นระยะห่างระหว่างรูปกับข้อความ
-                        // --- Text Details ---
-                        Expanded(
-                          // ใช้ Expanded เพื่อให้ Text Column ใช้พื้นที่ที่เหลือ
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ResponsiveText(
-                                'สวัสดีตอนเช้า !!!',
-                                fontSize: greetingFont,
-                                fontWeight: FontWeight.w700,
-                                color: Color.fromRGBO(125, 125, 125, 1),
-                              ),
-
-                              ResponsiveText(
-                                elderlyPerson.name,
-                                fontSize: nameFont,
-                                fontWeight: FontWeight.w700,
-                                color: Color.fromRGBO(56, 139, 18, 1),
-                              ),
-                              SizedBox(height: FontSizeHelper.getScaledFontSize(4)),
-                              ResponsiveText(
-                                'SKILLS',
-                                fontSize: labelFont,
-                                fontWeight: FontWeight.w700,
-                                color: Color.fromRGBO(125, 125, 125, 1),
-                              ),
-                              ResponsiveText(
-                                'ทำอาหาร',
-                                fontSize: labelFont,
-                                fontWeight: FontWeight.w700,
-                                color: Color.fromRGBO(125, 125, 125, 1),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ), // ปิด Row ส่วนโปรไฟล์เดิม
-                    // 2. ตัวเว้นระยะห่างระหว่างส่วนบนกับส่วนล่าง
-                    const SizedBox(height: 5),
-
-                    // 3. ส่วนใหม่: กรอบสีเขียวและข้อความเพิ่มเติม (อยู่ใน Container หลัก)
-                    Container(
-                      // ไม่ต้องมี margin เพราะอยู่ใน Padding ของ Container หลักอยู่แล้ว
-                      padding: const EdgeInsets.all(
-                        10.0,
-                      ), // เพิ่มระยะห่างภายในกรอบ
-
-                      child: Row(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/icons/cash.png',
-                                width: smallIconSize,
-                                height: smallIconSize,
-                              ),
-                              const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ResponsiveText(
-                                    '500.00',
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
-                                  ResponsiveText(
-                                    'รายได้วันนี้',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color.fromRGBO(125, 125, 125, 1),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          const SizedBox(width: 40), // ระยะห่างระหว่างสอง Row
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/icons/tip.png',
-                                width: smallIconSize,
-                                height: smallIconSize,
-                              ),
-                              const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ResponsiveText(
-                                    '50',
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color.fromRGBO(78, 127, 233, 1),
-                                  ),
-                                  ResponsiveText(
-                                    'ทิปวันนี้',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color.fromRGBO(125, 125, 125, 1),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                          ],
+                        ); // ปิด Column ที่เป็น child ของ Padding
+                      },
                     ),
-                    const SizedBox(height: 0),
-                    Container(
-                      // ไม่ต้องมี margin เพราะอยู่ใน Padding ของ Container หลักอยู่แล้ว
-                      padding: const EdgeInsets.all(
-                        10.0,
-                      ), // เพิ่มระยะห่างภายในกรอบ
-
-                      child: Row(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/icons/star.png',
-                                width: smallIconSize,
-                                height: smallIconSize,
-                              ),
-                              const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ResponsiveText(
-                                    '4.60',
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color.fromRGBO(242, 179, 64, 1),
-                                  ),
-                                  ResponsiveText(
-                                    'คะแนนรีวิว',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color.fromRGBO(125, 125, 125, 1),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ), // ระยะห่างระหว่างสอง Container
-                  ],
-                ); // ปิด Column ที่เป็น child ของ Padding
-              },
-              ),
+                  ),
+                ), // ปิด Container หลัก (กรอบโปรไฟล์)
+                const SizedBox(height: 20),
+                _buildJobStatusWidget(),
+                const SizedBox(height: 20),
+                // history box removed
+                // Add your widgets here (ตอนนี้ส่วนข้อความใหม่ถูกย้ายเข้าไปด้านในแล้ว)
+              ],
             ),
-            ), // ปิด Container หลัก (กรอบโปรไฟล์)
-            const SizedBox(height: 20),
-            _buildJobStatusWidget(),
-            const SizedBox(height: 20),
-            // history box removed
-            // Add your widgets here (ตอนนี้ส่วนข้อความใหม่ถูกย้ายเข้าไปด้านในแล้ว)
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildJobStatusWidget() {
     // ตรวจสอบสถานะ: ถ้าถูกจ้าง (สถานะ 1) และมีข้อมูลงาน
-  if (employee.status == EmploymentStatus.isHired &&
-    employee.currentJob != null) {
+    if (employee.status == EmploymentStatus.isHired &&
+        employee.currentJob != null) {
       // ----------------------------------------------------
       // A. สถานะ: ถูกจ้าง (แสดงกรอบงานปัจจุบันสีเขียว)
       // ----------------------------------------------------
@@ -342,14 +405,15 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => JobStatusScreen(
-                  jobData: {
-                    'date': '20/02/2568, 09:00 - 14:00',
-                    'employerName': 'น้องกาย',
-                    'jobType': 'ทำอาหาร',
-                    'salary': '฿ 500.00/คน',
-                  },
-                ),
+                builder:
+                    (context) => JobStatusScreen(
+                      jobData: {
+                        'date': '20/02/2568, 09:00 - 14:00',
+                        'employerName': 'น้องกาย',
+                        'jobType': 'ทำอาหาร',
+                        'salary': '฿ 500.00/คน',
+                      },
+                    ),
               ),
             );
           },
@@ -358,13 +422,11 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                ResponsiveText(
                   'สถานะงานปัจจุบัน',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
                 SizedBox(height: FontSizeHelper.getScaledFontSize(8)),
                 ResponsiveText(
@@ -391,32 +453,91 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              ResponsiveText('วันที่', fontSize: 16, fontWeight: FontWeight.w700),
-                              ResponsiveText('20/02/2568', fontSize: 16, color: Colors.grey[700], fontWeight: FontWeight.w600),
+                              Flexible(
+                                child: ResponsiveText(
+                                  'วันที่',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Flexible(
+                                child: ResponsiveText(
+                                  '20/02/2568',
+                                  fontSize: 16,
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w600,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
                             ],
                           ),
                           SizedBox(height: FontSizeHelper.getScaledFontSize(6)),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              ResponsiveText('เวลา', fontSize: 16, fontWeight: FontWeight.w700),
-                              ResponsiveText('09:00 - 14:00', fontSize: 16, color: Colors.grey[700], fontWeight: FontWeight.w600),
+                              Flexible(
+                                child: ResponsiveText(
+                                  'เวลา',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Flexible(
+                                child: ResponsiveText(
+                                  '09:00 - 14:00',
+                                  fontSize: 16,
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w600,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
                             ],
                           ),
                           SizedBox(height: FontSizeHelper.getScaledFontSize(6)),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              ResponsiveText('ผู้จ้าง', fontSize: 16, fontWeight: FontWeight.w700),
-                              ResponsiveText('${employee.currentJob!.employerName}', fontSize: 16, color: Colors.grey[700], fontWeight: FontWeight.w600),
+                              Flexible(
+                                child: ResponsiveText(
+                                  'ผู้จ้าง',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Flexible(
+                                child: ResponsiveText(
+                                  '${employee.currentJob!.employerName}',
+                                  fontSize: 16,
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w600,
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
                             ],
                           ),
-                          SizedBox(height: FontSizeHelper.getScaledFontSize(12)),
+                          SizedBox(
+                            height: FontSizeHelper.getScaledFontSize(12),
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              ResponsiveText('จัดสถานที่', fontSize: 15, fontWeight: FontWeight.w700, color: Color.fromRGBO(56, 139, 18, 1)),
-                              ResponsiveText('${employee.currentJob!.paymentAmount.toStringAsFixed(2)}฿ ', fontSize: 15, fontWeight: FontWeight.w700, color: Color.fromRGBO(56, 139, 18, 1)),
+                              Flexible(
+                                child: ResponsiveText(
+                                  'จัดสถานที่',
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color.fromRGBO(56, 139, 18, 1),
+                                ),
+                              ),
+                              Flexible(
+                                child: ResponsiveText(
+                                  '${employee.currentJob!.paymentAmount.toStringAsFixed(2)}฿ ',
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color.fromRGBO(56, 139, 18, 1),
+                                  textAlign: TextAlign.end,
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -463,7 +584,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
           borderRadius: BorderRadius.circular(10),
 
           // **3. เนื้อหาของปุ่ม (Text)**
-          child: const Center(
+          child: Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -473,12 +594,13 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                   height: 40,
                 ),
                 SizedBox(width: 10),
-                Text(
-                  'ตอนนี้ยังไม่มีงานนะครับ',
-                  style: TextStyle(
+                Flexible(
+                  child: ResponsiveText(
+                    'ตอนนี้ยังไม่มีงานนะครับ',
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ],

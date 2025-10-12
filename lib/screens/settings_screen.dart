@@ -30,7 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
@@ -48,10 +48,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       // Section Title
                       Row(
                         children: [
-                          Icon(
-                            Icons.text_fields,
-                            color: const Color(0xFF6EB715),
-                            size: fontProvider.getScaledFontSize(24),
+                          Flexible(
+                            child: Icon(
+                              Icons.text_fields,
+                              color: const Color(0xFF6EB715),
+                              size: fontProvider.getScaledFontSize(24),
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Text(
@@ -76,19 +78,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              'ขนาดปัจจุบัน:',
-                              style: TextStyle(
-                                fontSize: fontProvider.getScaledFontSize(16),
-                                color: Colors.black87,
+                            Flexible(
+                              child: Text(
+                                'ขนาดปัจจุบัน:',
+                                style: TextStyle(
+                                  fontSize: fontProvider.getScaledFontSize(16),
+                                  color: Colors.black87,
+                                ),
                               ),
                             ),
-                            Text(
-                              fontProvider.fontSizeDescription,
-                              style: TextStyle(
-                                fontSize: fontProvider.getScaledFontSize(16),
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF6EB715),
+                            Flexible(
+                              child: Text(
+                                fontProvider.fontSizeDescription,
+                                style: TextStyle(
+                                  fontSize: fontProvider.getScaledFontSize(16),
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF6EB715),
+                                ),
                               ),
                             ),
                           ],
@@ -185,18 +191,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       Row(
                         children: [
-                          Icon(
-                            Icons.settings,
-                            color: const Color(0xFF6EB715),
-                            size: fontProvider.getScaledFontSize(24),
+                          Flexible(
+                            child: Icon(
+                              Icons.settings,
+                              color: const Color(0xFF6EB715),
+                              size: fontProvider.getScaledFontSize(24),
+                            ),
                           ),
                           const SizedBox(width: 12),
-                          Text(
-                            'การตั้งค่าอื่นๆ',
-                            style: TextStyle(
-                              fontSize: fontProvider.getScaledFontSize(18),
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                          Flexible(
+                            child: Text(
+                              'การตั้งค่าอื่นๆ',
+                              style: TextStyle(
+                                fontSize: fontProvider.getScaledFontSize(18),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
                             ),
                           ),
                         ],
