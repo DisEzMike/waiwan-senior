@@ -32,8 +32,8 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     super.didChangeDependencies();
     _phoneController.text = localStorage.getItem('phone') ?? '';
 
-    // _nameController.text = 'สมชาย';
-    // _surnameController.text = 'ใจดี';
+    // _nameController.text = 'น้องกาย';
+    // _surnameController.text = 'ต้องได้ที่หนึ่ง';
     _idCardController.text = '1234567890123';
     _idAddressController.text =
         '123/45 หมู่ 6 ต.ตัวอย่าง อ.ตัวอย่าง จ.ตัวอย่าง 12345';

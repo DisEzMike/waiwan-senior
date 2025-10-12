@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:waiwan/screens/chat_rooms_screen.dart';
 import 'package:waiwan/screens/screenmenu/home_screen_body.dart';
+import 'package:waiwan/screens/job_screen.dart';
 import 'nav_bar.dart';
 import 'profilescreen/contractor_profile.dart';
-import 'notificationscreen/notification.dart';
 // Make sure the class name in contractor_profile.dart matches 'ContractorProfilePage'
 
 class MyMainPage extends StatelessWidget {
@@ -25,7 +25,7 @@ class MyMainPage extends StatelessWidget {
         ),
         AppNavItem(
           destination: destinations[2],
-          builder: (context) => const NotificationScreen(),
+          builder: (context) => const JobScreen(),
         ),
         AppNavItem(
           destination: destinations[3],

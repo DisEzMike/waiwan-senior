@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waiwan/providers/font_size_provider.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
 
 // โครงสร้างข้อมูลสำหรับแต่ละปุ่มในแถบนำทางด้านล่าง
 class NavDestination {
@@ -32,7 +31,7 @@ class AppDestinations {
     NavDestination(
       icon: Icons.notifications_outlined,
       iconSelected: Icons.notifications,
-      label: 'แจ้งเตือน',
+      label: 'งาน',
     ),
     NavDestination(
       icon: Icons.person_outlined,
@@ -200,7 +199,7 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
   }
 
   // สร้างหรือปรับแต่ง AppBar ตามหน้าปัจจุบัน
-  PreferredSizeWidget? _buildAppBar(BuildContext context) {
+  PreferredSizeWidget? _buildAppBar(BuildContext context, FontSizeProvider fontProvider) {
     if (!widget.showAppBar) {
       return null;
     }
@@ -213,18 +212,37 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
 
     final theme = Theme.of(context);
 
+    // ตรวจสอบว่าหน้าปัจจุบันควรแสดงไอคอน bell หรือไม่
+    final shouldShowBell = ['หน้าแรก', 'ข้อความ', 'งาน', 'โปรไฟล์'].contains(currentItem.title);
+
     return AppBar(
       title: Text(
         currentItem.title,
-        style: FontSizeHelper.createTextStyle(
-          fontSize: 18,
+        style: TextStyle(
+          fontSize: fontProvider.getScaledFontSize(22), // ใช้ fontProvider
           fontWeight: FontWeight.w600,
+          color: theme.colorScheme.onPrimary,
         ),
       ),
       centerTitle: true,
       backgroundColor: widget.backgroundColor ?? theme.colorScheme.primary,
       foregroundColor: theme.colorScheme.onPrimary,
       automaticallyImplyLeading: false,
+      toolbarHeight: 80, // เพิ่มความสูงของ AppBar
+      actions: shouldShowBell ? [
+        Padding(
+          padding: const EdgeInsets.only(right: 12.0), // เพิ่ม padding ขวาเพื่อขยับ bell ไปซ้าย
+          child: IconButton(
+            onPressed: () {
+              // เมื่อกดไอคอน bell
+              print('Notification bell pressed');
+              // คุณสามารถเพิ่มฟังก์ชันแจ้งเตือนที่นี่
+            },
+            icon: const Icon(Icons.notifications),
+            iconSize: fontProvider.getScaledFontSize(28), // ใช้ fontProvider สำหรับ icon ด้วย
+          ),
+        ),
+      ] : null,
     );
   }
 
@@ -238,7 +256,7 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
           backgroundColor:
               widget.scaffoldBackgroundColor ??
               Theme.of(context).scaffoldBackgroundColor,
-          appBar: _buildAppBar(context),
+          appBar: _buildAppBar(context, fontProvider),
           body: IndexedStack(
             index: _currentIndex,
             children: List.generate(widget.items.length, (index) {

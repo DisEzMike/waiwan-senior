@@ -23,7 +23,7 @@ class _MyBottomAppBarState extends State<MyBottomAppBar> {
     Destination(
       icon: Icons.notifications_outlined,
       iconSelected: Icons.notifications,
-      label: 'แจ้งเตือน',
+      label: 'งาน',
     ),
     Destination(
       icon: Icons.person_outlined,

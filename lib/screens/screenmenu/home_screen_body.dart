@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:localstorage/localstorage.dart';
 import 'dart:math' as math;
 import 'package:waiwan/services/user_service.dart';
+import 'package:waiwan/screens/job_status_screen.dart';
 import 'Status/Employment_data.dart';
 import 'Status/JobStatus.dart';
 // history removed
@@ -86,7 +87,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 5),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(25),
                 boxShadow: [
                   BoxShadow(
@@ -176,7 +177,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                                 color: Color.fromRGBO(125, 125, 125, 1),
                               ),
                               ResponsiveText(
-                                elderlyPerson.ability,
+                                'ทำอาหาร',
                                 fontSize: labelFont,
                                 fontWeight: FontWeight.w700,
                                 color: Color.fromRGBO(125, 125, 125, 1),
@@ -325,7 +326,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(25),
           boxShadow: [
             BoxShadow(
@@ -337,7 +338,20 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         ),
         child: InkWell(
           onTap: () {
-            print('Go to current job details: ${employee.currentJob!.jobTitle}');
+            // เด้งไปหน้าสถานะงาน
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => JobStatusScreen(
+                  jobData: {
+                    'date': '20/02/2568, 09:00 - 14:00',
+                    'employerName': 'น้องกาย',
+                    'jobType': 'ทำอาหาร',
+                    'salary': '฿ 500.00/คน',
+                  },
+                ),
+              ),
+            );
           },
           child: Padding(
             padding: const EdgeInsets.all(18.0),
@@ -426,10 +440,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         height: 80, // สูง 80 ตามที่คุณต้องการ
         margin: const EdgeInsets.symmetric(horizontal: 5), // เผื่อระยะห่างขอบ
         decoration: BoxDecoration(
-          color:
-              Theme.of(
-                context,
-              ).colorScheme.secondary, // ใช้สีพื้นหลังเดียวกับปุ่ม
+          color: Colors.white, // ใช้สีขาวแทนสีเขียว
           borderRadius: BorderRadius.circular(
             10,
           ), // อาจเพิ่มมุมโค้งมนเพื่อให้ดูคล้ายปุ่ม
