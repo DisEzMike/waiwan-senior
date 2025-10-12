@@ -59,11 +59,6 @@ class _CashIncomeScreenState extends State<CashIncomeScreen> {
         _imageFile == null) {
       _showValidationDialog('กรุณากรอกข้อมูลทั้งหมดและอัปโหลดหลักฐาน');
     } else {
-      print('Account Number: ${_accountNumberController.text}');
-      print('Bank: ${_bankController.text}');
-      print('Image Path: ${_imageFile!.path}');
-
-      // ✅ เมื่อสำเร็จ ไปที่หน้า Main และลบหน้าก่อนหน้าทั้งหมดทิ้ง
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (_) => const MyMainPage()),
@@ -173,51 +168,59 @@ class _CashIncomeScreenState extends State<CashIncomeScreen> {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildInputField(
-              'เลขบัญชี',
-              _accountNumberController,
-              'กรุณากรอกเลขบัญชีธนาคาร',
-            ),
-            const SizedBox(height: 20.0),
-            _buildInputField(
-              'ธนาคาร',
-              _bankController,
-              'กรุณากรอกชื่อธนาคาร',
-            ),
-            const SizedBox(height: 20.0),
-            _buildImagePickerSection(
-              title: "หลักฐานบัญชี",
-              buttonColor: primaryGreen,
-            ),
-            const Spacer(),
-            SizedBox(
-              height: 60,
-              child: ElevatedButton(
-                onPressed: _submitForm,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryGreen,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  elevation: 0,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+              _buildInputField(
+                'เลขบัญชี',
+                _accountNumberController,
+                'กรุณากรอกเลขบัญชีธนาคาร',
+              ),
+              const SizedBox(height: 20.0),
+              _buildInputField(
+                'ธนาคาร',
+                _bankController,
+                'กรุณากรอกชื่อธนาคาร',
+              ),
+              const SizedBox(height: 20.0),
+              _buildImagePickerSection(
+                title: "หลักฐานบัญชี",
+                buttonColor: primaryGreen,
+              ),
+                  ],
                 ),
-                child: const Text(
-                  'เสร็จสิ้น',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+              ),
+              const SizedBox(height: 20.0),
+              SizedBox(
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: _submitForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryGreen,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'เสร็จสิ้น',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20.0),
-          ],
+              const SizedBox(height: 20.0),
+            ],
+          ),
         ),
       ),
     );
