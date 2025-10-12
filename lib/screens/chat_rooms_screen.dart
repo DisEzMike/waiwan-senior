@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:waiwan/screens/chat.dart';
+import 'package:waiwan/utils/font_size_helper.dart';
 import 'package:waiwan/utils/helper.dart';
 
 import '../model/chat_room.dart';
@@ -102,7 +103,7 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
       builder: (context, chatProvider, child) {
         final chatRooms = chatProvider.chatRooms;
         if (chatRooms.isEmpty) {
-          return const Center(
+          return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -110,12 +111,10 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
                 SizedBox(height: 16),
                 Text(
                   'ยังไม่มีการสนทนา',
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'เริ่มสนทนาด้วยการสมัครงาน',
-                  style: TextStyle(color: Colors.grey),
+                  style: FontSizeHelper.createTextStyle(
+                    fontSize: 18,
+                    color: Colors.grey,
+                  ),
                 ),
               ],
             ),
@@ -164,7 +163,7 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
           children: [
             Text(
               chatRoom.jobTitle ?? 'ไม่มีชื่องาน',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: FontSizeHelper.createTextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             // if (chatRoom.jobTitle != null)
             //   Text(
@@ -181,14 +180,14 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
                 chatRoom.lastMessageContent!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.grey.shade700),
+                style: FontSizeHelper.createTextStyle(fontSize: 16, color: Colors.grey.shade700),
               ),
               const SizedBox(height: 4),
             ],
             if (chatRoom.lastMessageAt != null)
               Text(
                 _formatTime(chatRoom.lastMessageAt!),
-                style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                style: FontSizeHelper.createTextStyle(color: Colors.grey.shade500, fontSize: 12),
               ),
           ],
         ),
@@ -206,7 +205,7 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
                   chatRoom.unreadCount > 99
                       ? '99+'
                       : chatRoom.unreadCount.toString(),
-                  style: const TextStyle(
+                  style: FontSizeHelper.createTextStyle(
                     color: Colors.white,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
