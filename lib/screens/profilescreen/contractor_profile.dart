@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:waiwan/model/elderly_person.dart';
-import 'package:waiwan/screens/startapp/phone_input_screen.dart';
-import 'package:waiwan/services/user_service.dart';
 import 'package:waiwan/utils/font_size_helper.dart';
 import 'edit_profile.dart';
 import '../../widgets/user_profile/profile_header.dart';
@@ -20,42 +18,7 @@ class _ContractorProfileState extends State<ContractorProfile> {
   @override
   void initState() {
     super.initState();
-    // _loadProfile();
   }
-
-  // void _loadProfile() async {
-  //   try {
-  //     final senior = await UserService().getProfile();
-  //     if (mounted) {
-  //       setState(() {
-  //         // Update user state with fetched profile data
-  //         _user = senior;
-  //       });
-  //     }
-  //   } catch (e) {
-  //     debugPrint(e.toString());
-  //     if (mounted) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล: $e'),
-  //           backgroundColor: Colors.red,
-  //         ),
-  //       );
-
-  //       localStorage.removeItem('token');
-  //       localStorage.removeItem('userId');
-
-  //       setState(() {
-  //         _user = null;
-  //       });
-
-  //       Navigator.of(context).pushAndRemoveUntil(
-  //         MaterialPageRoute(builder: (context) => const PhoneInputScreen()),
-  //         (Route<dynamic> route) => false,
-  //       );
-  //     }
-  //   }
-  // }
 
   void _logout() async {
     // Show confirmation dialog

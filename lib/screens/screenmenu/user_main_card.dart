@@ -46,10 +46,10 @@ class UserMainCard extends StatelessWidget {
               maxWidth * 0.12,
             );
 
-            final greetingFont = math.min(
-              FontSizeHelper.getScaledFontSize(20),
-              maxWidth * 0.06,
-            );
+            // final greetingFont = math.min(
+            //   FontSizeHelper.getScaledFontSize(20),
+            //   maxWidth * 0.06,
+            // );
             final nameFont = math.min(
               FontSizeHelper.getScaledFontSize(24),
               maxWidth * 0.08,

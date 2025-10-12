@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -9,16 +8,10 @@ import 'package:waiwan/model/job.dart';
 import 'package:waiwan/providers/font_size_provider.dart';
 import 'package:waiwan/screens/screenmenu/user_main_card.dart';
 import 'package:waiwan/services/job_service.dart';
-import 'dart:math' as math;
 import 'package:waiwan/services/user_service.dart';
 import 'package:waiwan/screens/job_status_screen.dart';
 import 'package:waiwan/utils/format_time.dart';
 import 'package:waiwan/utils/service_helper.dart';
-import 'Status/Employment_data.dart';
-import 'Status/JobStatus.dart';
-// history removed
-import 'data/demo_data.dart';
-// import 'data/elderlypersonclass.dart';
 import '../../widgets/responsive_text.dart';
 import '../../utils/font_size_helper.dart';
 
