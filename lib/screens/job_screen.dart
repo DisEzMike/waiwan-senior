@@ -6,7 +6,7 @@ import 'package:waiwan/screens/job_detail_screen.dart';
 import 'package:waiwan/screens/job_status_screen.dart';
 import 'package:waiwan/services/job_service.dart';
 import 'package:waiwan/utils/format_time.dart';
-import 'package:waiwan/utils/service_helper.dart';
+import 'package:waiwan/utils/helper.dart';
 
 class JobScreen extends StatefulWidget {
   const JobScreen({super.key});

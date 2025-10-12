@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waiwan/utils/font_size_helper.dart';
 import '../../model/chat_message.dart';
 
 class ChatMessageBubble extends StatelessWidget {
@@ -16,7 +17,7 @@ class ChatMessageBubble extends StatelessWidget {
   });
 
   String _formatTime(DateTime timestamp) {
-    return "${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}";
+    return "${timestamp.toLocal().hour.toString().padLeft(2, '0')}:${timestamp.toLocal().minute.toString().padLeft(2, '0')}";
   }
 
   @override
@@ -56,7 +57,7 @@ class ChatMessageBubble extends StatelessWidget {
           children: [
             Text(
               message.message,
-              style: TextStyle(
+              style: FontSizeHelper.createTextStyle(
                 color: message.isMe ? Colors.white : Colors.black87,
                 fontSize: 16,
               ),
@@ -64,7 +65,7 @@ class ChatMessageBubble extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               _formatTime(message.createdAt),
-              style: TextStyle(
+              style: FontSizeHelper.createTextStyle(
                 color: message.isMe ? Colors.white70 : Colors.grey[600],
                 fontSize: 12,
               ),

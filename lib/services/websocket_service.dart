@@ -43,6 +43,8 @@ class WebSocketService {
   String? get currentRoomId => _currentRoomId;
 
   Future<void> connect(String roomId) async {
+    log('WebSocket connect called for room: $roomId');
+
     if (_isConnected && _currentRoomId == roomId) {
       log('Already connected to room: $roomId');
       return;
@@ -69,7 +71,7 @@ class WebSocketService {
       _reconnectAttempts = 0;
       _connectionController.add(true);
 
-      log('WebSocket connected to room: $roomId');
+      log('WebSocket connected successfully to room: $roomId');
 
       // Start listening for messages
       _listen();
@@ -81,6 +83,7 @@ class WebSocketService {
       _isConnected = false;
       _connectionController.add(false);
       _scheduleReconnect(roomId);
+      rethrow; // Re-throw the error so it can be caught in the calling code
     }
   }
 
@@ -107,11 +110,21 @@ class WebSocketService {
 
   void _handleMessage(Map<String, dynamic> message) {
     final type = message['type'] as String?;
+
     switch (type) {
       case 'new_message':
         final userId = localStorage.getItem('userId') ?? '';
-        final chatMessage = ChatMessage.fromJson({...message['message'], 'isMe': message['message']['sender_id'] == userId});
+        final messageData = message['message'] as Map<String, dynamic>;
+
+
+        // Set isMe flag
+        messageData['isMe'] = messageData['sender_id'] == userId;
+
+        final chatMessage = ChatMessage.fromJson(messageData);
+        log('Created ChatMessage: ${chatMessage.id} - ${chatMessage.message}');
+
         _messageController.add(chatMessage);
+        log('Added message to stream controller');
         break;
 
       case 'user_online':
@@ -125,6 +138,7 @@ class WebSocketService {
 
       case 'pong':
         // Handle pong response
+        log('Received pong');
         break;
 
       default:
@@ -174,17 +188,13 @@ class WebSocketService {
     _pingTimer = null;
   }
 
-  void sendMessage(String content, String messageType) {
+  void sendMessage(String content, {String messageType = 'text'}) {
     if (!_isConnected || _channel == null) {
       log('Cannot send message: WebSocket not connected');
       return;
     }
 
-    final message = {
-      'type': 'message',
-      'message': content,
-      'message_type': messageType,
-    };
+    final message = {'type': 'message', 'message': content};
 
     try {
       _channel!.sink.add(json.encode(message));
@@ -219,6 +229,21 @@ class WebSocketService {
       _channel!.sink.add(json.encode(message));
     } catch (e) {
       log('Error sending ping: $e');
+    }
+  }
+
+  void markAsRead() {
+    if (!_isConnected || _channel == null) {
+      return;
+    }
+
+    final message = {'type': 'mark_read'};
+
+    try {
+      _channel!.sink.add(json.encode(message));
+      log('Mark as read sent');
+    } catch (e) {
+      log('Error sending mark as read: $e');
     }
   }
 

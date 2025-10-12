@@ -11,7 +11,7 @@ import 'package:waiwan/services/job_service.dart';
 import 'package:waiwan/services/user_service.dart';
 import 'package:waiwan/screens/job_status_screen.dart';
 import 'package:waiwan/utils/format_time.dart';
-import 'package:waiwan/utils/service_helper.dart';
+import 'package:waiwan/utils/helper.dart';
 import '../../widgets/responsive_text.dart';
 import '../../utils/font_size_helper.dart';
 
