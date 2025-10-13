@@ -46,6 +46,36 @@ class ElderlyPerson {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'displayName': displayName,
+      'profile': {
+        'id': profile.id,
+        'first_name': profile.firstName,
+        'last_name': profile.lastName,
+        'id_card': profile.idCard,
+        'id_address': profile.iDaddress,
+        'current_address': profile.currentAddress,
+        'chronic_diseases': profile.chronicDiseases,
+        'contact_person': profile.contactPerson,
+        'contact_phone': profile.contactPhone,
+        'phone': profile.phone,
+        'gender': profile.gender,
+        'image_url': profile.imageUrl,
+      },
+      'ability': {
+        'id': ability.id,
+        'type': ability.type,
+        'work_experience': ability.workExperience,
+        'other_ability': ability.otherAbility,
+        'vehicle': ability.vehicle,
+        'offsite_work': ability.offsiteWork,
+      },
+      'is_verified': isVerified,
+    };
+  }
+
   // Calculate rating statistics from reviews
   RatingStats get ratingStats => RatingStats.fromReviews(reviews);
 

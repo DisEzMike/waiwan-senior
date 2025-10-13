@@ -1,5 +1,13 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:waiwan/model/elderly_person.dart';
+import 'package:waiwan/services/user_service.dart';
+import 'package:waiwan/utils/helper.dart';
 import '../../widgets/user_profile/edit_profile_image.dart';
 import '../../widgets/user_profile/profile_form.dart';
 import '../../widgets/user_profile/save_button.dart';
@@ -23,6 +31,11 @@ class _EditProfileState extends State<EditProfile> {
       TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   // final TextEditingController _genderController = TextEditingController();
+
+  final ImagePicker _picker = ImagePicker();
+  XFile? _pickedImage;
+  File? _cropedImage;
+  Uint8List? _pickedBytes;
 
   @override
   void initState() {
@@ -59,6 +72,71 @@ class _EditProfileState extends State<EditProfile> {
     super.dispose();
   }
 
+  Future<void> _pickFromGallery() async {
+    try {
+      final XFile? photo = await _picker.pickImage(source: ImageSource.gallery);
+      final croppedFile = await _cropImage(imageFile: File(photo!.path));
+      if (croppedFile != null) {
+        final bytes = await croppedFile.readAsBytes();
+        setState(() {
+          _pickedImage = photo;
+          _pickedBytes = bytes;
+          _cropedImage = croppedFile;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error picking image: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('ไม่สามารถเลือกภาพได้: $e')));
+      }
+    }
+  }
+
+  Future<File?> _cropImage({required File imageFile}) async {
+    try {
+      CroppedFile? croppedImg = await ImageCropper().cropImage(
+        maxWidth: 512,
+        maxHeight: 512,
+        sourcePath: imageFile.path,
+        compressQuality: 100,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      );
+      if (croppedImg == null) {
+        return null;
+      } else {
+        return File(croppedImg.path);
+      }
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
+  Future<void> _onConfirm() async {
+    if (_cropedImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('กรุณาเลือกรูปก่อนกดยืนยัน')),
+      );
+      return;
+    }
+
+    final File file = File(_cropedImage!.path);
+    UserService().uploadProfileImage(file).catchError((e) {
+      if (mounted) {
+        showErrorSnackBar(context, 'อัพโหลดรูปไม่สำเร็จ');
+      }
+      debugPrint('Context is not mounted. Cannot show error SnackBar.');
+    });
+
+    if (mounted) {
+      showSuccessSnackBar(context, 'อัพโหลดรูปสำเร็จ');
+    } else {
+      debugPrint('Context is not mounted. Cannot show success SnackBar.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,9 +162,14 @@ class _EditProfileState extends State<EditProfile> {
               // Profile Image Section
               EditProfileImage(
                 imageAsset: widget.user.profile.imageUrl,
-                onEditPressed: () {
-                  // TODO: Implement image selection
-                  debugPrint('Edit profile image pressed');
+                onEditPressed: () async {
+                  await _pickFromGallery();
+
+                  if (_cropedImage != null && mounted) {
+                    await _onConfirm();
+                    Timer(Duration(milliseconds: 500), () => Navigator.pop(context));
+                    // Navigator.pop(context);
+                  }
                 },
               ),
 

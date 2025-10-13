@@ -12,12 +12,12 @@ import 'package:waiwan/services/user_service.dart';
 import 'package:waiwan/screens/job_status_screen.dart';
 import 'package:waiwan/utils/format_time.dart';
 import 'package:waiwan/utils/helper.dart';
+import 'package:waiwan/widgets/loading_widget.dart';
 import '../../widgets/responsive_text.dart';
 import '../../utils/font_size_helper.dart';
 
 class HomeScreenBody extends StatefulWidget {
-  final ElderlyPerson user;
-  const HomeScreenBody({super.key, required this.user});
+  const HomeScreenBody({super.key});
 
   @override
   State<HomeScreenBody> createState() => _HomeScreenBodyState();
@@ -26,6 +26,33 @@ class HomeScreenBody extends StatefulWidget {
 class _HomeScreenBodyState extends State<HomeScreenBody> {
   Timer? _timer;
   MyJob? currentJob;
+  bool _isLoading = false;
+  ElderlyPerson _user = ElderlyPerson(
+    id: "กำลังโหลด",
+    displayName: "กำลังโหลด...",
+    profile: SeniorProfile(
+      id: "กำลังโหลด",
+      firstName: "กำลังโหลด",
+      lastName: "กำลังโหลด",
+      idCard: "กำลังโหลด",
+      iDaddress: "กำลังโหลด",
+      currentAddress: "กำลังโหลด",
+      chronicDiseases: "กำลังโหลด",
+      contactPerson: "กำลังโหลด",
+      contactPhone: "กำลังโหลด",
+      phone: "กำลังโหลด",
+      gender: "กำลังโหลด",
+      imageUrl: 'https://placehold.co/600x400.png',
+    ),
+    ability: SeniorAbility(
+      id: "กำลังโหลด",
+      type: "กำลังโหลด",
+      workExperience: "กำลังโหลด",
+      otherAbility: "กำลังโหลด",
+      vehicle: false,
+      offsiteWork: false,
+    ),
+  );
 
   @override
   void initState() {
@@ -41,12 +68,28 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   void didUpdateWidget(covariant HomeScreenBody oldWidget) {
     super.didUpdateWidget(oldWidget);
     _getMyJob();
+    _loadUserProfile();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _getMyJob();
+  void _loadUserProfile() {
+    if (_isLoading) return; // Prevent multiple simultaneous loads
+
+    setState(() {
+      _isLoading = true;
+    });
+    UserService()
+        .getProfile()
+        .then((user) {
+          setState(() {
+            _user = user;
+            _isLoading = false;
+          });
+        })
+        .catchError((error) {
+          setState(() {
+            _isLoading = false;
+          });
+        });
   }
 
   void _setOnlineStatus() async {
@@ -109,30 +152,32 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<FontSizeProvider>(
-      builder: (context, fontSizeProvider, child) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Column(
-              // กำหนดให้ทุก Widget ใน Column นี้จัดชิดซ้าย
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // --- Existing Profile Card Container (ตอนนี้รวมทุกอย่างไว้ด้านในแล้ว) ---
-                UserMainCard(
-                  widget: widget,
-                ), // ปิด Container หลัก (กรอบโปรไฟล์)
-                const SizedBox(height: 20),
-                _buildJobStatusWidget(),
-                const SizedBox(height: 20),
-                // history box removed
-                // Add your widgets here (ตอนนี้ส่วนข้อความใหม่ถูกย้ายเข้าไปด้านในแล้ว)
-              ],
-            ),
-          ),
+    return _isLoading
+        ? LoadingWidget()
+        : Consumer<FontSizeProvider>(
+          builder: (context, fontSizeProvider, child) {
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Column(
+                  // กำหนดให้ทุก Widget ใน Column นี้จัดชิดซ้าย
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // --- Existing Profile Card Container (ตอนนี้รวมทุกอย่างไว้ด้านในแล้ว) ---
+                    UserMainCard(
+                      user: _user,
+                    ), // ปิด Container หลัก (กรอบโปรไฟล์)
+                    const SizedBox(height: 20),
+                    _buildJobStatusWidget(),
+                    const SizedBox(height: 20),
+                    // history box removed
+                    // Add your widgets here (ตอนนี้ส่วนข้อความใหม่ถูกย้ายเข้าไปด้านในแล้ว)
+                  ],
+                ),
+              ),
+            );
+          },
         );
-      },
-    );
   }
 
   Widget _buildJobStatusWidget() {
@@ -160,13 +205,16 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                 builder:
                     (context) => JobStatusScreen(
                       jobData: {
-                        'date': start2EndDateTime(currentJob!.startedAt!, currentJob!.endedAt,),
+                        'date': start2EndDateTime(
+                          currentJob!.startedAt!,
+                          currentJob!.endedAt,
+                        ),
                         'employerName': currentJob!.userDisplayName,
                         'title': currentJob!.title,
                         'jobType': currentJob!.description,
                         'salary': '฿${currentJob!.price.toStringAsFixed(2)}',
                         'status': currentJob!.status,
-                        'chatRoomId': currentJob!.chatRoomId
+                        'chatRoomId': currentJob!.chatRoomId,
                       },
                     ),
               ),

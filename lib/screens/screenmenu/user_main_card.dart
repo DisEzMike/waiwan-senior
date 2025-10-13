@@ -1,14 +1,14 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:waiwan/model/elderly_person.dart';
 import 'package:waiwan/screens/screenmenu/home_screen_body.dart';
 import 'package:waiwan/utils/font_size_helper.dart';
 import 'package:waiwan/widgets/responsive_text.dart';
 
 class UserMainCard extends StatelessWidget {
-  const UserMainCard({super.key, required this.widget});
-
-  final HomeScreenBody widget;
+  ElderlyPerson user;
+  UserMainCard({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +81,7 @@ class UserMainCard extends StatelessWidget {
                       ),
                       child: ClipOval(
                         child: Image.network(
-                          widget.user.profile.imageUrl,
+                          user.profile.imageUrl,
                           width: avatarSize,
                           height: avatarSize,
                           fit: BoxFit.cover,
@@ -103,9 +103,8 @@ class UserMainCard extends StatelessWidget {
                           //   fontWeight: FontWeight.w700,
                           //   color: Color.fromRGBO(125, 125, 125, 1),
                           // ),
-
                           ResponsiveText(
-                            widget.user.displayName,
+                            user.displayName,
                             fontSize: nameFont,
                             fontWeight: FontWeight.w700,
                             color: Color.fromRGBO(56, 139, 18, 1),
@@ -118,7 +117,7 @@ class UserMainCard extends StatelessWidget {
                             color: Color.fromRGBO(125, 125, 125, 1),
                           ),
                           ResponsiveText(
-                            widget.user.ability.otherAbility,
+                            user.ability.otherAbility,
                             fontSize: labelFont,
                             fontWeight: FontWeight.w700,
                             color: Color.fromRGBO(125, 125, 125, 1),

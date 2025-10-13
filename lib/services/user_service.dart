@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart'; // Add this import
 import 'package:localstorage/localstorage.dart';
 import 'package:waiwan/model/elderly_person.dart';
 import 'package:waiwan/utils/config.dart';
@@ -52,6 +54,56 @@ class UserService {
       return jsonDecode(response.body);
     } else {
       throw errorHandler(response, 'getUserById');
+    }
+  }
+
+  Future uploadProfileImage(File imageFile) async {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$API_URL/files/upload?is_profile_image=true'),
+    );
+    request.headers.addAll({
+      'Authorization': 'Bearer $accessToken',
+    });
+    
+    // Get the file extension to determine MIME type
+    String fileName = imageFile.path.split('/').last;
+    String? mimeType;
+    
+    if (fileName.toLowerCase().endsWith('.jpg') || fileName.toLowerCase().endsWith('.jpeg')) {
+      mimeType = 'image/jpeg';
+    } else if (fileName.toLowerCase().endsWith('.png')) {
+      mimeType = 'image/png';
+    } else if (fileName.toLowerCase().endsWith('.gif')) {
+      mimeType = 'image/gif';
+    } else if (fileName.toLowerCase().endsWith('.webp')) {
+      mimeType = 'image/webp';
+    }
+    
+    // Add the file with proper MIME type
+    if (mimeType != null) {
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'file',
+          await imageFile.readAsBytes(),
+          filename: fileName,
+          contentType: MediaType.parse(mimeType),
+        ),
+      );
+    } else {
+      // Fallback to original method if MIME type can't be determined
+      request.files.add(
+        await http.MultipartFile.fromPath('file', imageFile.path),
+      );
+    }
+    
+    final response = await request.send().timeout(const Duration(seconds: 10));
+    if (response.statusCode == 200) {
+      final respStr = await response.stream.bytesToString();
+      return jsonDecode(respStr);
+    } else {
+      final errorBody = await response.stream.bytesToString();
+      throw streamErrorHandler(response, errorBody, 'uploadProfileImage');
     }
   }
 }
