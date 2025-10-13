@@ -102,6 +102,7 @@ class _EditProfileState extends State<EditProfile> {
         sourcePath: imageFile.path,
         compressQuality: 100,
         aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        uiSettings: [WebUiSettings(context: context)]
       );
       if (croppedImg == null) {
         return null;
