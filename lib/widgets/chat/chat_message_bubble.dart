@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:waiwan/utils/font_size_helper.dart';
 import '../../model/chat_message.dart';
 
 class ChatMessageBubble extends StatelessWidget {
@@ -18,7 +17,7 @@ class ChatMessageBubble extends StatelessWidget {
   });
 
   String _formatTime(DateTime timestamp) {
-    return "${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}";
+    return "${timestamp.toLocal().hour.toString().padLeft(2, '0')}:${timestamp.toLocal().minute.toString().padLeft(2, '0')}";
   }
 
   @override
@@ -58,7 +57,7 @@ class ChatMessageBubble extends StatelessWidget {
           children: [
             Text(
               message.message,
-              style: TextStyle(
+              style: FontSizeHelper.createTextStyle(
                 color: message.isMe ? Colors.white : Colors.black87,
                 fontSize: 16,
               ),
@@ -66,7 +65,7 @@ class ChatMessageBubble extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               _formatTime(message.createdAt),
-              style: TextStyle(
+              style: FontSizeHelper.createTextStyle(
                 color: message.isMe ? Colors.white70 : Colors.grey[600],
                 fontSize: 12,
               ),
@@ -74,39 +73,6 @@ class ChatMessageBubble extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildPaymentRow(
-    String label,
-    String value, {
-    bool isSpecial = false,
-  }) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: 14,
-              color: isSpecial ? const Color(0xFF6EB715) : Colors.grey[700],
-              fontWeight: isSpecial ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

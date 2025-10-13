@@ -68,7 +68,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const MyMainPage()),
+          MaterialPageRoute(builder: (context) => MyMainPage()),
           (route) => false,
         );
       } else {

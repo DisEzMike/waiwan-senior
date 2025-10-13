@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:waiwan/model/job.dart';
 import 'package:waiwan/providers/font_size_provider.dart';
 import 'package:waiwan/screens/job_detail_screen.dart';
+import 'package:waiwan/screens/job_status_screen.dart';
+import 'package:waiwan/services/job_service.dart';
+import 'package:waiwan/utils/format_time.dart';
+import 'package:waiwan/utils/helper.dart';
 
 class JobScreen extends StatefulWidget {
   const JobScreen({super.key});
@@ -11,8 +16,95 @@ class JobScreen extends StatefulWidget {
 }
 
 class _JobScreenState extends State<JobScreen> {
-  int _selectedIndex =
-      0; // 0 = คำขอจ้างงาน, 1 = กำลังดำเนินงาน, 2 = ประวัติการจ้าง, 3 = ยกเลิก/ปฏิเสธ
+  int _selectedIndex = 0;
+  // 0 = คำขอจ้างงาน, 1 = กำลังดำเนินงาน, 2 = ประวัติการจ้าง, 3 = ยกเลิก/ปฏิเสธ
+
+  final _jobs_completed = <MyJob>[];
+  final _jobs_pending = <MyJob>[];
+  final _jobs_accepted = <MyJob>[];
+  final _jobs_ongoing = <MyJob>[];
+  final _jobs_delined = <MyJob>[];
+  final _jobs_cancelled = <MyJob>[];
+
+  @override
+  void initState() {
+    super.initState();
+    // _loadJobs();
+  }
+
+  @override
+  void didUpdateWidget(covariant JobScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _loadJobs();
+  }
+
+  void _loadJobs() {
+    JobService()
+        .getAllJobs()
+        .then((jobs) {
+          final pendingJobs = <MyJob>[];
+          final acceptedJobs = <MyJob>[];
+          final ongoingJobs = <MyJob>[];
+          final declinedJobs = <MyJob>[];
+          final cancelledJobs = <MyJob>[];
+          final completedJobs = <MyJob>[];
+          for (var job in jobs) {
+            switch (job.applicationStatus) {
+              case "pending":
+                if (!pendingJobs.contains(job)) {
+                  pendingJobs.add(job);
+                }
+                break;
+              case "accepted":
+                if (job.status == "accepted") {
+                  if (!acceptedJobs.contains(job)) {
+                    acceptedJobs.add(job);
+                  }
+                } else if (job.status == "in_progress") {
+                  if (!ongoingJobs.contains(job)) {
+                    ongoingJobs.add(job);
+                  } else if (job.status == "completed") {
+                    if (!completedJobs.contains(job)) {
+                      completedJobs.add(job);
+                    }
+                  }
+                }
+                break;
+              case "declined":
+                if (!declinedJobs.contains(job)) {
+                  declinedJobs.add(job);
+                }
+                break;
+              case "canceled":
+                if (!cancelledJobs.contains(job)) {
+                  cancelledJobs.add(job);
+                }
+                break;
+              default:
+                break;
+            }
+
+            setState(() {
+              _jobs_completed.clear();
+              _jobs_completed.addAll(completedJobs);
+              _jobs_accepted.clear();
+              _jobs_accepted.addAll(acceptedJobs);
+              _jobs_pending.clear();
+              _jobs_pending.addAll(pendingJobs);
+              _jobs_delined.clear();
+              _jobs_delined.addAll(declinedJobs);
+              _jobs_cancelled.clear();
+              _jobs_cancelled.addAll(cancelledJobs);
+              _jobs_ongoing.clear();
+              _jobs_ongoing.addAll(ongoingJobs);
+            });
+          }
+        })
+        .catchError((e) {
+          debugPrint('eee : ${e.toString()}');
+          showErrorSnackBar(context, e.toString());
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +125,7 @@ class _JobScreenState extends State<JobScreen> {
   Widget _buildTabButtons(FontSizeProvider fontProvider) {
     final tabs = [
       'คำขอจ้างงาน',
+      'รอเริ่มงาน',
       'กำลังดำเนินงาน',
       'ประวัติการจ้าง',
       'ยกเลิก/ปฏิเสธ',
@@ -109,10 +202,12 @@ class _JobScreenState extends State<JobScreen> {
       case 0:
         return _buildJobRequestsContent(fontProvider);
       case 1:
-        return _buildOngoingJobsContent();
+        return _buildAcceptedJobsContent();
       case 2:
-        return _buildJobHistoryContent();
+        return _buildOngoingJobsContent();
       case 3:
+        return _buildJobHistoryContent();
+      case 4:
         return _buildCancelledJobsContent();
       default:
         return _buildJobRequestsContent(fontProvider);
@@ -122,40 +217,52 @@ class _JobScreenState extends State<JobScreen> {
   Widget _buildJobRequestsContent(FontSizeProvider fontProvider) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          _buildJobCard(
-            date: '20/02/2568, 09:00 - 14:00',
-            employerName: 'น้องกาย',
-            jobType: 'ทำอาหาร',
-            salary: '500.00',
-          ),
-          const SizedBox(height: 9),
-          _buildJobCard(
-            date: '22/02/2568, 10:00 - 16:00',
-            employerName: 'คุณหญิง',
-            jobType: 'จัดเตรียมของ',
-            salary: '600.00',
-          ),
-          const SizedBox(height: 9),
-          _buildJobCard(
-            date: '25/02/2568, 08:00 - 12:00',
-            employerName: 'นายไมค์',
-            jobType: 'ล้างจาน',
-            salary: '350.00',
-          ),
-          // Add some bottom padding to ensure last card is fully visible
-          const SizedBox(height: 20),
-        ],
-      ),
+      child:
+          _jobs_pending.isNotEmpty
+              ? Column(
+                children: [
+                  Column(
+                    children:
+                        _jobs_pending.map((job) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16.0),
+                            child: _buildJobCard(
+                              date: start2EndDateTime(
+                                job.acceptedAt ?? DateTime.now(),
+                                job.startedAt,
+                              ),
+                              icon: Icons.mail,
+                              employerName: job.userDisplayName,
+                              title: job.title,
+                              jobType: job.workType,
+                              salary: "฿${job.price.toStringAsFixed(2)}",
+                              status: job.status,
+                              applicationStatus: job.applicationStatus,
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              )
+              : _buildNodataContent(
+                Icons.mail_outline,
+                'ไม่มีคำขอจ้างงาน',
+                'คุณยังไม่มีคำขอจ้างงานในขณะนี้',
+              ),
     );
   }
 
   Widget _buildJobCard({
     required String date,
+    required IconData icon,
     required String employerName,
+    required String title,
     required String jobType,
     required String salary,
+    required String status,
+    required String applicationStatus,
+    String? chatRoomId
   }) {
     return Consumer<FontSizeProvider>(
       builder: (context, fontProvider, child) {
@@ -166,14 +273,33 @@ class _JobScreenState extends State<JobScreen> {
               context,
               MaterialPageRoute(
                 builder:
-                    (context) => JobDetailScreen(
-                      jobData: {
-                        'date': date,
-                        'employerName': employerName,
-                        'jobType': jobType,
-                        'salary': salary,
-                      },
-                    ),
+                    (context) =>
+                        (applicationStatus == "pending" || applicationStatus == "accepted" || applicationStatus == "declined") && status != "in_progress"
+                            ? JobDetailScreen(
+                              jobData: {
+                                'date': date,
+                                'icon': icon.toString(),
+                                'employerName': employerName,
+                                'title': title,
+                                'jobType': jobType,
+                                'salary': salary,
+                                'status': status,
+                                'applicationStatus': applicationStatus,
+                                'chatRoomId': chatRoomId ?? ""
+                              },
+                            )
+                            : JobStatusScreen(
+                              jobData: {
+                                'date': date,
+                                'icon': icon.toString(),
+                                'employerName': employerName,
+                                'title': title,
+                                'jobType': jobType,
+                                'salary': salary,
+                                'status': status,
+                                'chatRoomId': chatRoomId ?? ""
+                              },
+                            ),
               ),
             );
 
@@ -208,11 +334,7 @@ class _JobScreenState extends State<JobScreen> {
                       color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(
-                      Icons.work,
-                      color: Colors.white,
-                      size: 32,
-                    ),
+                    child: Icon(icon, color: Colors.white, size: 32),
                   ),
                   const SizedBox(width: 16),
                   // ข้อมูลงาน
@@ -233,7 +355,7 @@ class _JobScreenState extends State<JobScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          jobType,
+                          title,
                           style: TextStyle(
                             fontSize: fontProvider.getScaledFontSize(14),
                             color: Colors.grey[500],
@@ -281,7 +403,7 @@ class _JobScreenState extends State<JobScreen> {
                           children: [
                             Flexible(
                               child: Text(
-                                '$salary บาท',
+                                salary,
                                 style: TextStyle(
                                   fontSize: fontProvider.getScaledFontSize(16),
                                   fontWeight: FontWeight.w700,
@@ -306,97 +428,181 @@ class _JobScreenState extends State<JobScreen> {
     );
   }
 
+  Widget _buildAcceptedJobsContent() {
+    return Consumer<FontSizeProvider>(
+      builder: (context, fontProvider, child) {
+        return SingleChildScrollView(
+          child:
+              _jobs_accepted.isNotEmpty
+                  ? Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children:
+                          _jobs_accepted.map((job) {
+                            return _buildJobCard(
+                              date: start2EndDateTime(
+                                job.acceptedAt ?? DateTime.now(),
+                                job.startedAt,
+                              ),
+                              icon: Icons.access_time_filled_outlined,
+                              employerName: job.userDisplayName,
+                              title: job.title,
+                              jobType: job.workType,
+                              salary: "฿${job.price.toStringAsFixed(2)}",
+                              status: job.status,
+                              applicationStatus: job.applicationStatus,
+                              chatRoomId: job.chatRoomId
+                            );
+                          }).toList(),
+                    ),
+                  )
+                  : _buildNodataContent(
+                    Icons.access_time,
+                    'ไม่มีงานที่รอเริ่ม',
+                    'คุณยังไม่มีงานที่รอเริ่มในขณะนี้',
+                  ),
+        );
+      },
+    );
+  }
+
   Widget _buildOngoingJobsContent() {
     return Consumer<FontSizeProvider>(
       builder: (context, fontProvider, child) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.work_outline,
-                size: fontProvider.getScaledFontSize(64),
-                color: Colors.grey,
-              ),
-              SizedBox(height: fontProvider.getScaledFontSize(16)),
-              Text(
-                'กำลังดำเนินงาน',
-                style: TextStyle(
-                  fontSize: fontProvider.getScaledFontSize(18),
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: fontProvider.getScaledFontSize(8)),
-              Text(
-                'ยังไม่มีงานที่กำลังดำเนินการ',
-                style: TextStyle(
-                  fontSize: fontProvider.getScaledFontSize(14),
-                  color: Colors.grey,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+        return SingleChildScrollView(
+          child:
+              _jobs_ongoing.isNotEmpty
+                  ? Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children:
+                          _jobs_ongoing.map((job) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: _buildJobCard(
+                                date: start2EndDateTime(
+                                  job.acceptedAt ?? DateTime.now(),
+                                  job.startedAt,
+                                ),
+                                icon: Icons.work,
+                                employerName: job.userDisplayName,
+                                title: job.title,
+                                jobType: job.workType,
+                                salary: "฿${job.price.toStringAsFixed(2)}",
+                                status: job.status,
+                                applicationStatus: job.applicationStatus,
+                                chatRoomId: job.chatRoomId
+                              ),
+                            );
+                          }).toList(),
+                    ),
+                  )
+                  : _buildNodataContent(
+                    Icons.work,
+                    'ไม่มีงานที่กำลังดำเนินการ',
+                    'คุณยังไม่มีงานที่กำลังดำเนินการในขณะนี้',
+                  ),
         );
       },
     );
   }
 
   Widget _buildJobHistoryContent() {
-    return Consumer<FontSizeProvider>(
-      builder: (context, fontProvider, child) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child:
+          _jobs_completed.isNotEmpty
+              ? Column(
+                children: [
+                  Column(
+                    children:
+                        _jobs_completed.map((job) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16.0),
+                            child: _buildJobCard(
+                              date: start2EndDateTime(
+                                job.acceptedAt ?? DateTime.now(),
+                                job.startedAt,
+                              ),
+                              icon: Icons.history,
+                              employerName: job.userDisplayName,
+                              title: job.title,
+                              jobType: job.workType,
+                              salary: "฿${job.price.toStringAsFixed(2)}",
+                              status: job.status,
+                              applicationStatus: job.applicationStatus,
+                              chatRoomId: job.chatRoomId
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              )
+              : _buildNodataContent(
                 Icons.history,
-                size: fontProvider.getScaledFontSize(64),
-                color: Colors.grey,
+                'ไม่มีประวัติการจ้างงาน',
+                'คุณยังไม่มีประวัติการจ้างงานในขณะนี้',
               ),
-              SizedBox(height: fontProvider.getScaledFontSize(16)),
-              Text(
-                'ประวัติการจ้าง',
-                style: TextStyle(
-                  fontSize: fontProvider.getScaledFontSize(18),
-                  color: Colors.grey,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: fontProvider.getScaledFontSize(8)),
-              Text(
-                'ยังไม่มีประวัติการจ้างงาน',
-                style: TextStyle(
-                  fontSize: fontProvider.getScaledFontSize(14),
-                  color: Colors.grey,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 
   Widget _buildCancelledJobsContent() {
     return Consumer<FontSizeProvider>(
       builder: (context, fontProvider, child) {
+        return SingleChildScrollView(
+          child:
+              _jobs_delined.isNotEmpty
+                  ? Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children:
+                          _jobs_delined.map((job) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: _buildJobCard(
+                                date: start2EndDateTime(
+                                  job.acceptedAt ?? DateTime.now(),
+                                  job.startedAt,
+                                ),
+                                icon: Icons.cancel,
+                                employerName: job.userDisplayName,
+                                title: job.title,
+                                jobType: job.workType,
+                                salary: "฿${job.price.toStringAsFixed(2)}",
+                                status: job.status,
+                                applicationStatus: job.applicationStatus,
+                                chatRoomId: job.chatRoomId
+                              ),
+                            );
+                          }).toList(),
+                    ),
+                  )
+                  : _buildNodataContent(
+                    Icons.cancel_outlined,
+                    'ไม่มีงานที่ถูกยกเลิก/ปฏิเสธ',
+                    'คุณยังไม่มีงานที่ถูกยกเลิก/ปฏิเสธในขณะนี้',
+                  ),
+        );
+      },
+    );
+  }
+
+  Widget _buildNodataContent(IconData icon, String title, String description) {
+    return Consumer<FontSizeProvider>(
+      builder: (context, fontProvider, child) {
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                Icons.cancel_outlined,
+                icon,
                 size: fontProvider.getScaledFontSize(64),
                 color: Colors.grey,
               ),
               SizedBox(height: fontProvider.getScaledFontSize(16)),
               Text(
-                'ยกเลิก / ปฏิเสธ',
+                title,
                 style: TextStyle(
                   fontSize: fontProvider.getScaledFontSize(18),
                   color: Colors.grey,
@@ -406,7 +612,7 @@ class _JobScreenState extends State<JobScreen> {
               ),
               SizedBox(height: fontProvider.getScaledFontSize(8)),
               Text(
-                'ยังไม่มีงานที่ยกเลิกหรือปฏิเสธ',
+                description,
                 style: TextStyle(
                   fontSize: fontProvider.getScaledFontSize(14),
                   color: Colors.grey,

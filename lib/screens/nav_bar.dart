@@ -29,8 +29,8 @@ class AppDestinations {
       label: 'ข้อความ',
     ),
     NavDestination(
-      icon: Icons.notifications_outlined,
-      iconSelected: Icons.notifications,
+      icon: Icons.work_outline,
+      iconSelected: Icons.work_outlined,
       label: 'งาน',
     ),
     NavDestination(

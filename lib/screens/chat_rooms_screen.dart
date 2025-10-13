@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:waiwan/model/user.dart';
 import 'package:waiwan/screens/chat.dart';
-import 'package:waiwan/services/user_service.dart';
+import 'package:waiwan/utils/font_size_helper.dart';
+import 'package:waiwan/utils/helper.dart';
 
 import '../model/chat_room.dart';
 import '../providers/chat_provider.dart';
-import '../services/chat_service.dart';
 
 class ChatRoomsScreen extends StatefulWidget {
   const ChatRoomsScreen({super.key});
@@ -32,16 +31,14 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
         _error = null;
       });
 
-      final chatRooms = await ChatService.getChatRooms();
-      if (mounted) {
-        final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-        chatProvider.setChatRooms(chatRooms);
-      }
+      final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+      await chatProvider.loadChatRooms();
     } catch (e) {
       if (mounted) {
         setState(() {
           _error = e.toString();
         });
+        showErrorSnackBar(context, e.toString());
       }
     } finally {
       if (mounted) {
@@ -56,11 +53,11 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
     await _loadChatRooms();
   }
 
-  void _navigateToChat(User user, ChatRoom chatRoom) async {
+  void _navigateToChat(ChatRoom chatRoom) async {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChatScreen(person: user, chatroomId: chatRoom.id),
+        builder: (context) => ChatScreen(chatroomId: chatRoom.id),
       ),
     );
   }
@@ -106,7 +103,7 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
       builder: (context, chatProvider, child) {
         final chatRooms = chatProvider.chatRooms;
         if (chatRooms.isEmpty) {
-          return const Center(
+          return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -114,12 +111,10 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
                 SizedBox(height: 16),
                 Text(
                   'ยังไม่มีการสนทนา',
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'เริ่มสนทนาด้วยการสมัครงาน',
-                  style: TextStyle(color: Colors.grey),
+                  style: FontSizeHelper.createTextStyle(
+                    fontSize: 18,
+                    color: Colors.grey,
+                  ),
                 ),
               ],
             ),
@@ -153,25 +148,28 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
 
   Future<Widget> _buildChatRoomTile(ChatRoom chatRoom) async {
     try {
-      final res = await UserService().getUserById(chatRoom.userId);
-      final user = User.fromJson(res);
+      // if (chatRoom.seniorId.isEmpty) {
+      //   throw Exception('Invalid senior ID');
+      // }
+      // final res = await UserService().getSenior(chatRoom.seniorId);
+      // final senior = ElderlyPerson.fromJson(res);
       return ListTile(
         leading: CircleAvatar(
-          backgroundImage: NetworkImage(user.profile.imageUrl),
           radius: 24,
+          child: Icon(Icons.person, size: 32, color: Colors.white),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              chatRoom.userName,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              chatRoom.jobTitle ?? 'ไม่มีชื่องาน',
+              style: FontSizeHelper.createTextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            if (chatRoom.jobTitle != null)
-              Text(
-                chatRoom.jobTitle!,
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-              ),
+            // if (chatRoom.jobTitle != null)
+            //   Text(
+            //     chatRoom.jobTitle!,
+            //     style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+            //   ),
           ],
         ),
         subtitle: Column(
@@ -182,14 +180,14 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
                 chatRoom.lastMessageContent!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.grey.shade700),
+                style: FontSizeHelper.createTextStyle(fontSize: 16, color: Colors.grey.shade700),
               ),
               const SizedBox(height: 4),
             ],
             if (chatRoom.lastMessageAt != null)
               Text(
                 _formatTime(chatRoom.lastMessageAt!),
-                style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                style: FontSizeHelper.createTextStyle(color: Colors.grey.shade500, fontSize: 12),
               ),
           ],
         ),
@@ -207,7 +205,7 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
                   chatRoom.unreadCount > 99
                       ? '99+'
                       : chatRoom.unreadCount.toString(),
-                  style: const TextStyle(
+                  style: FontSizeHelper.createTextStyle(
                     color: Colors.white,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
@@ -217,10 +215,13 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
             const SizedBox(height: 4),
             Consumer<ChatProvider>(
               builder: (context, chatProvider, child) {
+                // Get the first senior's ID or use empty string if no seniors
+                final seniorId =
+                    chatRoom.seniors.isNotEmpty
+                        ? chatRoom.seniors.first.id
+                        : '';
                 final isOnline =
-                    chatProvider.onlineUsers[chatRoom.id]?.contains(
-                      chatRoom.seniorId,
-                    ) ??
+                    chatProvider.onlineUsers[chatRoom.id]?.contains(seniorId) ??
                     false;
 
                 return Container(
@@ -235,10 +236,12 @@ class _ChatRoomsScreenState extends State<ChatRoomsScreen> {
             ),
           ],
         ),
-        onTap: () => _navigateToChat(user, chatRoom),
+        onTap: () => _navigateToChat(chatRoom),
       );
     } catch (e) {
-      return ListTile(title: Text('Error: $e'));
+      debugPrint(e.toString());
+      showErrorSnackBar(context, e.toString());
+      return ListTile(title: Text('Error loading user: ${e.toString()}'));
     }
   }
 

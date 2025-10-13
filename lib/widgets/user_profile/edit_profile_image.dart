@@ -42,10 +42,13 @@ class EditProfileImage extends StatelessWidget {
                 ),
               ],
             ),
-            child: ClipOval(
-              child: Image.network(
-                imageAsset,
-                fit: BoxFit.cover,
+            child: InkWell(
+              onTap: onEditPressed,
+              child: ClipOval(
+                child: Image.network(
+                  imageAsset,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),

@@ -6,8 +6,14 @@ import 'nav_bar.dart';
 import 'profilescreen/contractor_profile.dart';
 // Make sure the class name in contractor_profile.dart matches 'ContractorProfilePage'
 
-class MyMainPage extends StatelessWidget {
+class MyMainPage extends StatefulWidget {
   const MyMainPage({super.key});
+
+  @override
+  State<MyMainPage> createState() => _MyMainPageState();
+}
+
+class _MyMainPageState extends State<MyMainPage> {
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +23,7 @@ class MyMainPage extends StatelessWidget {
       items: [
         AppNavItem(
           destination: destinations[0],
-          builder: (context) => const HomeScreenBody(),
+          builder: (context) => HomeScreenBody(),
         ),
         AppNavItem(
           destination: destinations[1],
@@ -25,7 +31,7 @@ class MyMainPage extends StatelessWidget {
         ),
         AppNavItem(
           destination: destinations[2],
-          builder: (context) => const JobScreen(),
+          builder: (context) => JobScreen(),
         ),
         AppNavItem(
           destination: destinations[3],

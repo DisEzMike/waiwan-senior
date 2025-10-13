@@ -60,29 +60,32 @@ class ProfileHeader extends StatelessWidget {
           // Name and edit button
           Expanded(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ResponsiveText(
-                      name,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                    ResponsiveText(
-                      subtitle,
-                      fontSize: 14,
-                      color: Colors.black54,
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ResponsiveText(
+                        name,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      ResponsiveText(
+                        subtitle,
+                        fontSize: 14,
+                        color: Colors.black54,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
                 IconButton(
-                  icon: const Icon(
-                    Icons.chevron_right,
-                    color: Colors.black54,
-                  ),
+                  icon: const Icon(Icons.chevron_right, color: Colors.black54),
                   onPressed: onEditPressed,
                 ),
               ],
