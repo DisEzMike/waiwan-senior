@@ -2,13 +2,12 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:waiwan/model/elderly_person.dart';
-import 'package:waiwan/screens/screenmenu/home_screen_body.dart';
 import 'package:waiwan/utils/font_size_helper.dart';
 import 'package:waiwan/widgets/responsive_text.dart';
 
 class UserMainCard extends StatelessWidget {
-  ElderlyPerson user;
-  UserMainCard({super.key, required this.user});
+  final ElderlyPerson user;
+  const UserMainCard({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
