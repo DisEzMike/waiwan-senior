@@ -184,7 +184,6 @@ class _EditProfileState extends State<EditProfile> {
                   EditProfileImage(
                     imageAsset: widget.user.profile.imageUrl,
                     onEditPressed: () async {
-                      await _pickFromGallery();
                       await _pickImg();
                       if (_cropedImage != null && mounted) {
                         await _onConfirm();
