@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waiwan/utils/font_size_helper.dart';
 
 class EditProfileImage extends StatelessWidget {
   final String imageAsset;
@@ -45,10 +46,7 @@ class EditProfileImage extends StatelessWidget {
             child: InkWell(
               onTap: onEditPressed,
               child: ClipOval(
-                child: Image.network(
-                  imageAsset,
-                  fit: BoxFit.cover,
-                ),
+                child: Image.network(imageAsset, fit: BoxFit.cover),
               ),
             ),
           ),
@@ -56,23 +54,19 @@ class EditProfileImage extends StatelessWidget {
           Expanded(
             child: InkWell(
               onTap: onEditPressed,
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'แก้ไขรูปโปรไฟล์',
-                    style: TextStyle(
+                    style: FontSizeHelper.createTextStyle(
                       color: Colors.grey,
                       fontSize: 18,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   SizedBox(width: 4),
-                  Icon(
-                    Icons.edit,
-                    color: Colors.grey,
-                    size: 18,
-                  ),
+                  Icon(Icons.edit, color: Colors.grey, size: 18),
                 ],
               ),
             ),

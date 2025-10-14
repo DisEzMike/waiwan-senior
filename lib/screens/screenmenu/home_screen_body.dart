@@ -65,6 +65,12 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadUserProfile();
+  }
+
+  @override
   void didUpdateWidget(covariant HomeScreenBody oldWidget) {
     super.didUpdateWidget(oldWidget);
     _getMyJob();
