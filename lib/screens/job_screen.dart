@@ -7,6 +7,7 @@ import 'package:waiwan_senior/screens/job_status_screen.dart';
 import 'package:waiwan_senior/services/job_service.dart';
 import 'package:waiwan_senior/utils/format_time.dart';
 import 'package:waiwan_senior/utils/helper.dart';
+import 'package:waiwan_senior/widgets/loading_widget.dart';
 
 class JobScreen extends StatefulWidget {
   const JobScreen({super.key});
@@ -26,10 +27,11 @@ class _JobScreenState extends State<JobScreen> {
   final _jobs_delined = <MyJob>[];
   final _jobs_cancelled = <MyJob>[];
 
+  bool _isLoading = false;
   @override
   void initState() {
     super.initState();
-    // _loadJobs();
+    _loadJobs();
   }
 
   @override
@@ -38,7 +40,11 @@ class _JobScreenState extends State<JobScreen> {
     _loadJobs();
   }
 
-  void _loadJobs() {
+  Future<void> _loadJobs() async {
+    if (_isLoading) return; // Prevent multiple simultaneous loads
+    setState(() {
+      _isLoading = true;
+    });
     JobService()
         .getAllJobs()
         .then((jobs) {
@@ -97,6 +103,7 @@ class _JobScreenState extends State<JobScreen> {
               _jobs_cancelled.addAll(cancelledJobs);
               _jobs_ongoing.clear();
               _jobs_ongoing.addAll(ongoingJobs);
+              _isLoading = false;
             });
           }
         })
@@ -110,14 +117,16 @@ class _JobScreenState extends State<JobScreen> {
   Widget build(BuildContext context) {
     return Consumer<FontSizeProvider>(
       builder: (context, fontProvider, child) {
-        return Column(
-          children: [
-            // ปุ่มแท็บใต้ Top App Bar
-            _buildTabButtons(fontProvider),
-            // เนื้อหาตามแท็บที่เลือก
-            Expanded(child: _buildTabContent(fontProvider)),
-          ],
-        );
+        return _isLoading
+            ? LoadingWidget()
+            : Column(
+              children: [
+                // ปุ่มแท็บใต้ Top App Bar
+                _buildTabButtons(fontProvider),
+                // เนื้อหาตามแท็บที่เลือก
+                Expanded(child: _buildTabContent(fontProvider)),
+              ],
+            );
       },
     );
   }
@@ -260,7 +269,7 @@ class _JobScreenState extends State<JobScreen> {
                             : JobStatusScreen(job: job),
               ),
             );
-
+            await _loadJobs();
             // ถ้ากดปุ่ม "ไม่สนใจ" จะได้ result = 3
             if (result == 3) {
               setState(() {
@@ -387,30 +396,27 @@ class _JobScreenState extends State<JobScreen> {
   }
 
   Widget _buildAcceptedJobsContent() {
-    return Consumer<FontSizeProvider>(
-      builder: (context, fontProvider, child) {
-        return SingleChildScrollView(
-          child:
-              _jobs_accepted.isNotEmpty
-                  ? Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children:
-                          _jobs_accepted.map((job) {
-                            return _buildJobCard(
-                              job,
-                              Icons.access_time_filled_outlined,
-                            );
-                          }).toList(),
-                    ),
-                  )
-                  : _buildNodataContent(
-                    Icons.access_time,
-                    'ไม่มีงานที่รอเริ่ม',
-                    'คุณยังไม่มีงานที่รอเริ่มในขณะนี้',
-                  ),
-        );
-      },
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child:
+          _jobs_accepted.isNotEmpty
+              ? Column(
+                children:
+                    _jobs_accepted.map((job) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: _buildJobCard(
+                          job,
+                          Icons.access_time_filled_outlined,
+                        ),
+                      );
+                    }).toList(),
+              )
+              : _buildNodataContent(
+                Icons.access_time,
+                'ไม่มีงานที่รอเริ่ม',
+                'คุณยังไม่มีงานที่รอเริ่มในขณะนี้',
+              ),
     );
   }
 
