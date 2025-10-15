@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:waiwan_senior/model/job.dart';
 import 'package:waiwan_senior/screens/chat.dart';
+import 'package:waiwan_senior/services/job_service.dart';
 import 'package:waiwan_senior/utils/font_size_helper.dart';
-import 'package:waiwan_senior/screens/job_status_screen.dart';
 import 'package:waiwan_senior/utils/format_time.dart';
 
 class JobDetailScreen extends StatefulWidget {
   // final Map<String, String> jobData;
-  final MyJob job;
+  MyJob job;
 
-  const JobDetailScreen({super.key, required this.job});
+  JobDetailScreen({super.key, required this.job});
 
   @override
   State<JobDetailScreen> createState() => _JobDetailScreenState();
@@ -73,6 +73,27 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
           ),
         );
       }
+    }
+  }
+
+  void _acceptJob() async {
+    // JobStatusScreen(job: widget.job);
+    try {
+      final job = await JobService().acceptInvite(
+        widget.job.id,
+        "ยืนยันการรับงาน",
+      );
+      if (mounted) {
+        setState(() {
+          widget.job = job;
+        });
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => JobStatusScreen(job: job)),
+        // );
+      }
+    } catch (e) {
+      debugPrint('Error navigating to JobStatusScreen: $e');
     }
   }
 
@@ -352,16 +373,7 @@ class _JobDetailScreenState extends State<JobDetailScreen> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {
-                        // ปุ่มยืนยัน - เด้งไปหน้าสถานะงาน
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => JobStatusScreen(job: widget.job),
-                          ),
-                        );
-                      },
+                      onPressed: () => _acceptJob(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         padding: const EdgeInsets.symmetric(vertical: 16),

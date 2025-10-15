@@ -137,12 +137,16 @@ class JobService {
   }
 
   //  Accept invitation
-  Future acceptInvite(String jobId) async {
+  Future<MyJob> acceptInvite(int jobId, String msg) async {
     final response = await http
-        .post(Uri.parse('$baseUrl/$jobId/accept'), headers: headers)
+        .post(Uri.parse('$baseUrl/$jobId/accept'),
+        headers: headers,
+        body: jsonEncode({'message': msg})
+        )
         .timeout(const Duration(seconds: 5));
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      final Map<String, dynamic> res = jsonDecode(response.body);
+      return MyJob.fromJson(res['job']);
     } else {
       throw errorHandler(response, 'acceptInvite');
     }
