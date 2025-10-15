@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:waiwan/providers/font_size_provider.dart';
-import 'package:waiwan/screens/notificationscreen/notification.dart';
+import 'package:waiwan_senior/providers/font_size_provider.dart';
+import 'package:waiwan_senior/screens/notificationscreen/notification.dart';
 
 // โครงสร้างข้อมูลสำหรับแต่ละปุ่มในแถบนำทางด้านล่าง
 class NavDestination {

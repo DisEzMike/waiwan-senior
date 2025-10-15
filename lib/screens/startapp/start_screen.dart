@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:waiwan/screens/startapp/phone_input_screen.dart';
+import 'package:waiwan_senior/screens/startapp/phone_input_screen.dart';
 import '../../providers/font_size_provider.dart';
 
 class StartScreen extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
 import '../../model/chat_message.dart';
 
 class ChatMessageBubble extends StatelessWidget {

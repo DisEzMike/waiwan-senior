@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waiwan/screens/startapp/personal_info_screen.dart';
+import 'package:waiwan_senior/screens/startapp/personal_info_screen.dart';
 
 class IdCardScanScreen extends StatelessWidget {
   const IdCardScanScreen({super.key});

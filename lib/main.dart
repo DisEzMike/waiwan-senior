@@ -3,10 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
-import 'package:waiwan/providers/font_size_provider.dart';
-import 'package:waiwan/providers/chat_provider.dart';
-import 'package:waiwan/screens/startapp/start_screen.dart';
-import 'package:waiwan/utils/colors.dart';
+import 'package:waiwan_senior/providers/chat_provider.dart';
+import 'package:waiwan_senior/providers/font_size_provider.dart';
+import 'package:waiwan_senior/screens/startapp/start_screen.dart';
+import 'package:waiwan_senior/utils/colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

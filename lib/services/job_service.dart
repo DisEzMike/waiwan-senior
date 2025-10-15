@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:localstorage/localstorage.dart';
-import 'package:waiwan/model/job.dart';
-import 'package:waiwan/utils/config.dart';
-import 'package:waiwan/utils/helper.dart';
+import 'package:waiwan_senior/model/job.dart';
+import 'package:waiwan_senior/utils/config.dart';
+import 'package:waiwan_senior/utils/helper.dart';
 
 class JobService {
   // Use your computer's IP address when running the FastAPI server

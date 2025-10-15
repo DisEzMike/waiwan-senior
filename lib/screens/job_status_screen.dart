@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:waiwan/model/job.dart';
-import 'package:waiwan/screens/chat.dart';
-import 'package:waiwan/screens/job_completed_screen.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
-import 'package:waiwan/utils/format_time.dart';
+import 'package:waiwan_senior/model/job.dart';
+import 'package:waiwan_senior/screens/chat.dart';
+import 'package:waiwan_senior/screens/job_completed_screen.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
+import 'package:waiwan_senior/utils/format_time.dart';
 
 class JobStatusScreen extends StatefulWidget {
   final MyJob job;

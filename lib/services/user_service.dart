@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart'; // Add this import
 import 'package:localstorage/localstorage.dart';
-import 'package:waiwan/model/elderly_person.dart';
-import 'package:waiwan/utils/config.dart';
-import 'package:waiwan/utils/helper.dart';
+import 'package:waiwan_senior/model/elderly_person.dart';
+import 'package:waiwan_senior/utils/config.dart';
+import 'package:waiwan_senior/utils/helper.dart';
 
 class UserService {
   // Use your computer's IP address when running the FastAPI server

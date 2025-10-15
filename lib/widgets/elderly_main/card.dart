@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:waiwan/providers/font_size_provider.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
+import 'package:waiwan_senior/providers/font_size_provider.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
 import '../../model/elderly_person.dart';
 
 class ElderlyPersonCard extends StatelessWidget {

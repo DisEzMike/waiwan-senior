@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
 
 class EditProfileImage extends StatelessWidget {
   final String imageAsset;
