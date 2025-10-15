@@ -29,6 +29,7 @@ class UserService {
     if (response.statusCode == 200) {
       return ElderlyPerson.fromJson(jsonDecode(response.body));
     } else {
+      localStorage.clear();
       throw errorHandler(response, 'getProfile');
     }
   }

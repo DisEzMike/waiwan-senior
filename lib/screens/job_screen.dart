@@ -228,8 +228,8 @@ class _JobScreenState extends State<JobScreen> {
                             padding: const EdgeInsets.only(bottom: 16.0),
                             child: _buildJobCard(
                               date: start2EndDateTime(
-                                job.acceptedAt ?? DateTime.now(),
-                                job.startedAt,
+                                job.startedAt!,
+                                job.endedAt,
                               ),
                               icon: Icons.mail,
                               employerName: job.userDisplayName,
@@ -441,8 +441,8 @@ class _JobScreenState extends State<JobScreen> {
                           _jobs_accepted.map((job) {
                             return _buildJobCard(
                               date: start2EndDateTime(
-                                job.acceptedAt ?? DateTime.now(),
-                                job.startedAt,
+                                job.startedAt!,
+                                job.endedAt,
                               ),
                               icon: Icons.access_time_filled_outlined,
                               employerName: job.userDisplayName,
@@ -481,8 +481,8 @@ class _JobScreenState extends State<JobScreen> {
                               padding: const EdgeInsets.only(bottom: 16.0),
                               child: _buildJobCard(
                                 date: start2EndDateTime(
-                                  job.acceptedAt ?? DateTime.now(),
-                                  job.startedAt,
+                                  job.startedAt!,
+                                  job.endedAt,
                                 ),
                                 icon: Icons.work,
                                 employerName: job.userDisplayName,
@@ -521,8 +521,8 @@ class _JobScreenState extends State<JobScreen> {
                             padding: const EdgeInsets.only(bottom: 16.0),
                             child: _buildJobCard(
                               date: start2EndDateTime(
-                                job.acceptedAt ?? DateTime.now(),
-                                job.startedAt,
+                                job.startedAt!,
+                                job.endedAt,
                               ),
                               icon: Icons.history,
                               employerName: job.userDisplayName,
@@ -562,8 +562,8 @@ class _JobScreenState extends State<JobScreen> {
                               padding: const EdgeInsets.only(bottom: 16.0),
                               child: _buildJobCard(
                                 date: start2EndDateTime(
-                                  job.acceptedAt ?? DateTime.now(),
-                                  job.startedAt,
+                                  job.startedAt!,
+                                  job.endedAt,
                                 ),
                                 icon: Icons.cancel,
                                 employerName: job.userDisplayName,
