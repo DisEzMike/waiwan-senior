@@ -226,19 +226,7 @@ class _JobScreenState extends State<JobScreen> {
                         _jobs_pending.map((job) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16.0),
-                            child: _buildJobCard(
-                              date: start2EndDateTime(
-                                job.acceptedAt ?? DateTime.now(),
-                                job.startedAt,
-                              ),
-                              icon: Icons.mail,
-                              employerName: job.userDisplayName,
-                              title: job.title,
-                              jobType: job.workType,
-                              salary: "฿${job.price.toStringAsFixed(2)}",
-                              status: job.status,
-                              applicationStatus: job.applicationStatus,
-                            ),
+                            child: _buildJobCard(job, Icons.mail),
                           );
                         }).toList(),
                   ),
@@ -253,53 +241,23 @@ class _JobScreenState extends State<JobScreen> {
     );
   }
 
-  Widget _buildJobCard({
-    required String date,
-    required IconData icon,
-    required String employerName,
-    required String title,
-    required String jobType,
-    required String salary,
-    required String status,
-    required String applicationStatus,
-    String? chatRoomId
-  }) {
+  Widget _buildJobCard(MyJob job, IconData icon) {
     return Consumer<FontSizeProvider>(
       builder: (context, fontProvider, child) {
         return GestureDetector(
           onTap: () async {
-            debugPrint('Card tapped: $jobType'); // Debug print
+            debugPrint('Card tapped: ${job.id}'); // Debug print
             final result = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder:
                     (context) =>
-                        (applicationStatus == "pending" || applicationStatus == "accepted" || applicationStatus == "declined") && status != "in_progress"
-                            ? JobDetailScreen(
-                              jobData: {
-                                'date': date,
-                                'icon': icon.toString(),
-                                'employerName': employerName,
-                                'title': title,
-                                'jobType': jobType,
-                                'salary': salary,
-                                'status': status,
-                                'applicationStatus': applicationStatus,
-                                'chatRoomId': chatRoomId ?? ""
-                              },
-                            )
-                            : JobStatusScreen(
-                              jobData: {
-                                'date': date,
-                                'icon': icon.toString(),
-                                'employerName': employerName,
-                                'title': title,
-                                'jobType': jobType,
-                                'salary': salary,
-                                'status': status,
-                                'chatRoomId': chatRoomId ?? ""
-                              },
-                            ),
+                        (job.applicationStatus == "pending" ||
+                                    job.applicationStatus == "accepted" ||
+                                    job.applicationStatus == "declined") &&
+                                job.status != "in_progress"
+                            ? JobDetailScreen(job: job)
+                            : JobStatusScreen(job: job),
               ),
             );
 
@@ -344,7 +302,7 @@ class _JobScreenState extends State<JobScreen> {
                       children: [
                         // วันที่และเวลา
                         Text(
-                          date,
+                          start2EndDateTime(job.startedAt!, job.endedAt),
                           style: TextStyle(
                             fontSize: fontProvider.getScaledFontSize(14),
                             color: Colors.grey[500],
@@ -355,7 +313,7 @@ class _JobScreenState extends State<JobScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          title,
+                          job.title,
                           style: TextStyle(
                             fontSize: fontProvider.getScaledFontSize(14),
                             color: Colors.grey[500],
@@ -383,7 +341,7 @@ class _JobScreenState extends State<JobScreen> {
                             Flexible(
                               flex: 3,
                               child: Text(
-                                employerName,
+                                job.userDisplayName,
                                 style: TextStyle(
                                   fontSize: fontProvider.getScaledFontSize(16),
                                   fontWeight: FontWeight.w600,
@@ -403,7 +361,7 @@ class _JobScreenState extends State<JobScreen> {
                           children: [
                             Flexible(
                               child: Text(
-                                salary,
+                                "฿${job.price.toStringAsFixed(2)}",
                                 style: TextStyle(
                                   fontSize: fontProvider.getScaledFontSize(16),
                                   fontWeight: FontWeight.w700,
@@ -440,18 +398,8 @@ class _JobScreenState extends State<JobScreen> {
                       children:
                           _jobs_accepted.map((job) {
                             return _buildJobCard(
-                              date: start2EndDateTime(
-                                job.acceptedAt ?? DateTime.now(),
-                                job.startedAt,
-                              ),
-                              icon: Icons.access_time_filled_outlined,
-                              employerName: job.userDisplayName,
-                              title: job.title,
-                              jobType: job.workType,
-                              salary: "฿${job.price.toStringAsFixed(2)}",
-                              status: job.status,
-                              applicationStatus: job.applicationStatus,
-                              chatRoomId: job.chatRoomId
+                              job,
+                              Icons.access_time_filled_outlined,
                             );
                           }).toList(),
                     ),
@@ -479,20 +427,7 @@ class _JobScreenState extends State<JobScreen> {
                           _jobs_ongoing.map((job) {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16.0),
-                              child: _buildJobCard(
-                                date: start2EndDateTime(
-                                  job.acceptedAt ?? DateTime.now(),
-                                  job.startedAt,
-                                ),
-                                icon: Icons.work,
-                                employerName: job.userDisplayName,
-                                title: job.title,
-                                jobType: job.workType,
-                                salary: "฿${job.price.toStringAsFixed(2)}",
-                                status: job.status,
-                                applicationStatus: job.applicationStatus,
-                                chatRoomId: job.chatRoomId
-                              ),
+                              child: _buildJobCard(job, Icons.work),
                             );
                           }).toList(),
                     ),
@@ -519,20 +454,7 @@ class _JobScreenState extends State<JobScreen> {
                         _jobs_completed.map((job) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16.0),
-                            child: _buildJobCard(
-                              date: start2EndDateTime(
-                                job.acceptedAt ?? DateTime.now(),
-                                job.startedAt,
-                              ),
-                              icon: Icons.history,
-                              employerName: job.userDisplayName,
-                              title: job.title,
-                              jobType: job.workType,
-                              salary: "฿${job.price.toStringAsFixed(2)}",
-                              status: job.status,
-                              applicationStatus: job.applicationStatus,
-                              chatRoomId: job.chatRoomId
-                            ),
+                            child: _buildJobCard(job, Icons.history),
                           );
                         }).toList(),
                   ),
@@ -560,20 +482,7 @@ class _JobScreenState extends State<JobScreen> {
                           _jobs_delined.map((job) {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 16.0),
-                              child: _buildJobCard(
-                                date: start2EndDateTime(
-                                  job.acceptedAt ?? DateTime.now(),
-                                  job.startedAt,
-                                ),
-                                icon: Icons.cancel,
-                                employerName: job.userDisplayName,
-                                title: job.title,
-                                jobType: job.workType,
-                                salary: "฿${job.price.toStringAsFixed(2)}",
-                                status: job.status,
-                                applicationStatus: job.applicationStatus,
-                                chatRoomId: job.chatRoomId
-                              ),
+                              child: _buildJobCard(job, Icons.cancel),
                             );
                           }).toList(),
                     ),

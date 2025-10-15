@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:waiwan/model/elderly_person.dart';
+import 'package:waiwan/screens/startapp/start_screen.dart';
 import 'package:waiwan/services/user_service.dart';
 import 'package:waiwan/utils/font_size_helper.dart';
 import 'package:waiwan/widgets/loading_widget.dart';
@@ -34,6 +35,17 @@ class _ContractorProfileState extends State<ContractorProfile> {
 
   void _loadUserProfile() {
     if (_isLoading) return; // Prevent multiple simultaneous loads
+
+    if (localStorage.getItem('token') == null) {
+      // If no token, navigate to login screen
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder:  (context) => const StartScreen()),
+          (Route<dynamic> route) => false,
+        );
+      });
+      return;
+    }
 
     setState(() {
       _isLoading = true;

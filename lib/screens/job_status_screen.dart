@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:waiwan/model/job.dart';
 import 'package:waiwan/screens/chat.dart';
 import 'package:waiwan/screens/job_completed_screen.dart';
 import 'package:waiwan/utils/font_size_helper.dart';
+import 'package:waiwan/utils/format_time.dart';
 
 class JobStatusScreen extends StatefulWidget {
-  final Map<String, dynamic> jobData;
+  final MyJob job;
 
-  const JobStatusScreen({super.key, required this.jobData});
+  const JobStatusScreen({super.key, required this.job});
 
   @override
   State<JobStatusScreen> createState() => _JobStatusScreenState();
@@ -100,7 +102,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.jobData['employerName'] ?? 'นายกาย',
+                            widget.job.userDisplayName,
                             style: FontSizeHelper.createTextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -121,7 +123,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                   ),
 
                   const SizedBox(height: 20),
-                  if (widget.jobData['status'] == 'in_progress')
+                  if (widget.job.status == 'in_progress')
                     Row(
                       children: [
                         Expanded(
@@ -133,7 +135,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                                 MaterialPageRoute(
                                   builder:
                                       (context) => ChatScreen(
-                                        chatroomId: widget.jobData['chatRoomId']!,
+                                        chatroomId: widget.job.chatRoomId!,
                                       ),
                                 ),
                               );
@@ -164,25 +166,31 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                   // รายละเอียดงาน
                   _buildDetailRow(
                     'วันที่:',
-                    widget.jobData['date']?.split(',')[0] ?? '20/02/2568',
+                    start2EndDateTime(
+                      widget.job.startedAt!,
+                      widget.job.endedAt,
+                    ).split(',')[0],
                     Colors.black,
                   ),
                   const SizedBox(height: 12),
                   _buildDetailRow(
                     'เวลา:',
-                    widget.jobData['date']?.split(', ')[1] ?? '09:00-14:00',
+                    start2EndDateTime(
+                      widget.job.startedAt!,
+                      widget.job.endedAt,
+                    ).split(',')[1],
                     Colors.black,
                   ),
                   const SizedBox(height: 12),
                   _buildDetailRow(
                     'งานที่จ้าง',
-                    widget.jobData['title'] ?? 'จัดสถานที่',
+                    widget.job.title,
                     Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(height: 12),
                   _buildDetailRow(
                     'รายละเอียด',
-                    widget.jobData['jobType'] ?? 'จัดสถานที่',
+                    widget.job.description,
                     Colors.black,
                   ),
 
@@ -224,9 +232,7 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) => JobCompletedScreen(
-                                      jobData: widget.jobData,
-                                    ),
+                                    (context) => JobCompletedScreen(job: widget.job),
                               ),
                             );
                           },
@@ -266,7 +272,9 @@ class _JobStatusScreenState extends State<JobStatusScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '88/1 ลลองกรง 1 แขวงลาดกระบัง เขตลาดกระบัง กรุงเทพมหานคร 10520',
+                    widget.job.location != null && widget.job.location['address'] != null
+                        ? widget.job.location['address']
+                        : 'ไม่มีข้อมูลที่อยู่',
                     style: FontSizeHelper.createTextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,

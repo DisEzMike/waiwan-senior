@@ -208,21 +208,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder:
-                    (context) => JobStatusScreen(
-                      jobData: {
-                        'date': start2EndDateTime(
-                          currentJob!.startedAt!,
-                          currentJob!.endedAt,
-                        ),
-                        'employerName': currentJob!.userDisplayName,
-                        'title': currentJob!.title,
-                        'jobType': currentJob!.description,
-                        'salary': '฿${currentJob!.price.toStringAsFixed(2)}',
-                        'status': currentJob!.status,
-                        'chatRoomId': currentJob!.chatRoomId,
-                      },
-                    ),
+                builder: (context) => JobStatusScreen(job: currentJob!),
               ),
             );
           },
