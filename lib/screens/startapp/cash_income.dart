@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:waiwan/screens/profile_upload_screen.dart'; 
+import 'package:waiwan_senior/screens/profile_upload_screen.dart'; 
 
 class CashIncomeScreen extends StatefulWidget {
   const CashIncomeScreen({super.key});

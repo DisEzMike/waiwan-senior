@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:waiwan/screens/startapp/cash_income.dart';
-import 'package:waiwan/services/auth_service.dart';
+import 'package:waiwan_senior/screens/startapp/cash_income.dart';
+import 'package:waiwan_senior/services/auth_service.dart';
 
 enum ExperienceLevel { certified, experienced, noExperience }
 

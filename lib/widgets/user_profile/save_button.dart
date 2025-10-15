@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
 
 class SaveButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -30,7 +31,7 @@ class SaveButton extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: TextStyle(
+          style: FontSizeHelper.createTextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: textColor ?? Colors.white,

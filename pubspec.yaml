@@ -1,5 +1,5 @@
-name: waiwan
-description: "A new Flutter project."
+name: waiwan_senior
+description: "Waiwan Senior - Senior care service application."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -44,6 +44,7 @@ dependencies:
   web_socket_channel: ^3.0.0
   shared_preferences: ^2.3.2
   image_cropper: ^11.0.0
+  url_launcher: ^6.2.1
 
 
   # The following adds the Cupertino Icons font to your application.

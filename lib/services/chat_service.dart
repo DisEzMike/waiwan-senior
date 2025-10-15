@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:localstorage/localstorage.dart';
-import 'package:waiwan/utils/config.dart';
-import 'package:waiwan/utils/helper.dart';
+import 'package:waiwan_senior/utils/config.dart';
+import 'package:waiwan_senior/utils/helper.dart';
 
 import '../model/chat_message.dart';
 import '../model/chat_room.dart';

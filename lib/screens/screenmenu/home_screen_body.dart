@@ -3,16 +3,16 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:waiwan/model/elderly_person.dart';
-import 'package:waiwan/model/job.dart';
-import 'package:waiwan/providers/font_size_provider.dart';
-import 'package:waiwan/screens/screenmenu/user_main_card.dart';
-import 'package:waiwan/services/job_service.dart';
-import 'package:waiwan/services/user_service.dart';
-import 'package:waiwan/screens/job_status_screen.dart';
-import 'package:waiwan/utils/format_time.dart';
-import 'package:waiwan/utils/helper.dart';
-import 'package:waiwan/widgets/loading_widget.dart';
+import 'package:waiwan_senior/model/elderly_person.dart';
+import 'package:waiwan_senior/model/job.dart';
+import 'package:waiwan_senior/providers/font_size_provider.dart';
+import 'package:waiwan_senior/screens/screenmenu/user_main_card.dart';
+import 'package:waiwan_senior/services/job_service.dart';
+import 'package:waiwan_senior/services/user_service.dart';
+import 'package:waiwan_senior/screens/job_status_screen.dart';
+import 'package:waiwan_senior/utils/format_time.dart';
+import 'package:waiwan_senior/utils/helper.dart';
+import 'package:waiwan_senior/widgets/loading_widget.dart';
 import '../../widgets/responsive_text.dart';
 import '../../utils/font_size_helper.dart';
 
@@ -62,6 +62,12 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
       Duration(seconds: 15),
       (Timer t) => _setOnlineStatus(),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadUserProfile();
   }
 
   @override
@@ -202,21 +208,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder:
-                    (context) => JobStatusScreen(
-                      jobData: {
-                        'date': start2EndDateTime(
-                          currentJob!.startedAt!,
-                          currentJob!.endedAt,
-                        ),
-                        'employerName': currentJob!.userDisplayName,
-                        'title': currentJob!.title,
-                        'jobType': currentJob!.description,
-                        'salary': '฿${currentJob!.price.toStringAsFixed(2)}',
-                        'status': currentJob!.status,
-                        'chatRoomId': currentJob!.chatRoomId,
-                      },
-                    ),
+                builder: (context) => JobStatusScreen(job: currentJob!),
               ),
             );
           },

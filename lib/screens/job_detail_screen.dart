@@ -1,12 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:waiwan/screens/chat.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
-import 'package:waiwan/screens/job_status_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:waiwan_senior/model/job.dart';
+import 'package:waiwan_senior/screens/chat.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
+import 'package:waiwan_senior/screens/job_status_screen.dart';
+import 'package:waiwan_senior/utils/format_time.dart';
 
-class JobDetailScreen extends StatelessWidget {
-  final Map<String, String> jobData;
+class JobDetailScreen extends StatefulWidget {
+  // final Map<String, String> jobData;
+  final MyJob job;
 
-  const JobDetailScreen({super.key, required this.jobData});
+  const JobDetailScreen({super.key, required this.job});
+
+  @override
+  State<JobDetailScreen> createState() => _JobDetailScreenState();
+}
+
+class _JobDetailScreenState extends State<JobDetailScreen> {
+  Future<void> _openGoogleMaps() async {
+    final lat = widget.job.location['lat'];
+    final lng = widget.job.location['lng'];
+
+    if (lat != null && lng != null) {
+      try {
+        // ลองใช้ Google Maps URL ก่อน
+        final googleMapsUrl = Uri.parse(
+          'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
+        );
+
+        // ใช้ launchUrl โดยตรงโดยไม่ตรวจสอบ canLaunchUrl ก่อน
+        await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication);
+      } catch (e) {
+        debugPrint('Google Maps URL failed: $e');
+
+        try {
+          // Fallback 1: ลอง geo URI
+          final geoUrl = Uri.parse('geo:$lat,$lng?q=$lat,$lng');
+          await launchUrl(geoUrl);
+        } catch (e2) {
+          debugPrint('Geo URL failed: $e2');
+
+          try {
+            // Fallback 2: ลอง browser URL
+            final browserUrl = Uri.parse(
+              'https://maps.google.com/?q=$lat,$lng',
+            );
+            await launchUrl(browserUrl, mode: LaunchMode.externalApplication);
+          } catch (e3) {
+            debugPrint('Browser URL failed: $e3');
+
+            // แสดง error message
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'ไม่สามารถเปิดแผนที่ได้ กรุณาตรวจสอบการติดตั้ง Google Maps',
+                  ),
+                  backgroundColor: Colors.red,
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            }
+          }
+        }
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ไม่พบข้อมูลตำแหน่งสถานที่'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +156,7 @@ class JobDetailScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            jobData['employerName'] ?? 'นายกาย',
+                            widget.job.userDisplayName,
                             style: FontSizeHelper.createTextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -109,7 +177,7 @@ class JobDetailScreen extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 20),
-                  if (jobData['status'] == 'accepted')
+                  if (widget.job.status == 'accepted')
                     Row(
                       children: [
                         Expanded(
@@ -120,8 +188,9 @@ class JobDetailScreen extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder:
-                                      (context) =>
-                                          ChatScreen(chatroomId: jobData['chatRoomId']!,),
+                                      (context) => ChatScreen(
+                                        chatroomId: widget.job.chatRoomId ?? '',
+                                      ),
                                 ),
                               );
                             },
@@ -148,22 +217,28 @@ class JobDetailScreen extends StatelessWidget {
                   const Divider(),
                   const SizedBox(height: 20),
 
-                  // วันที่และเวลา
+                  // รายละเอียดงาน
                   _buildDetailRow(
                     'วันที่:',
-                    jobData['date']?.split(',')[0] ?? '20/02/2568',
+                    start2EndDateTime(
+                      widget.job.startedAt!,
+                      widget.job.endedAt,
+                    ).split(',')[0],
                     Colors.black,
                   ),
                   const SizedBox(height: 12),
                   _buildDetailRow(
                     'เวลา:',
-                    jobData['date']?.split(', ')[1] ?? '09:00-14:00',
+                    start2EndDateTime(
+                      widget.job.startedAt!,
+                      widget.job.endedAt,
+                    ).split(',')[1],
                     Colors.black,
                   ),
                   const SizedBox(height: 12),
                   _buildDetailRow(
                     'งานที่จ้าง',
-                    jobData['jobType'] ?? 'ทำงาน',
+                    widget.job.title,
                     Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(height: 20),
@@ -179,7 +254,7 @@ class JobDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    jobData['jobType'] ?? 'ทำงาน',
+                    widget.job.description,
                     style: FontSizeHelper.createTextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -191,7 +266,7 @@ class JobDetailScreen extends StatelessWidget {
                   // ราคาที่จ้าง
                   _buildDetailRow(
                     'ราคาที่จ้าง',
-                    jobData['salary'] ?? '฿ 0.00/คน',
+                    '฿${widget.job.price.toStringAsFixed(2)}',
                     Theme.of(context).colorScheme.primary,
                     isPrice: true,
                   ),
@@ -212,11 +287,33 @@ class JobDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '88/1 ลลองกรง 1 แขวงลาดกระบัง เขตลาดกระบัง กรุงเทพมหานคร',
+                    widget.job.location != null &&
+                            widget.job.location['address'] != null
+                        ? widget.job.location['address']
+                        : 'ไม่มีข้อมูลที่อยู่',
                     style: FontSizeHelper.createTextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  GestureDetector(
+                    onTap: () => _openGoogleMaps(),
+                    child: Row(
+                      children: [
+                        Icon(Icons.location_pin, size: 24, color: Colors.blue),
+                        const SizedBox(width: 6),
+                        Text(
+                          'เปิดแผนที่',
+                          style: FontSizeHelper.createTextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -226,7 +323,7 @@ class JobDetailScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             // ปุ่มตอบรับ
-            if (jobData['applicationStatus'] == "pending")
+            if (widget.job.applicationStatus == "pending")
               Row(
                 children: [
                   Expanded(
@@ -261,7 +358,7 @@ class JobDetailScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder:
-                                (context) => JobStatusScreen(jobData: jobData),
+                                (context) => JobStatusScreen(job: widget.job),
                           ),
                         );
                       },

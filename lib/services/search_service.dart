@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:waiwan/model/elderly_person.dart';
-import 'package:waiwan/utils/config.dart';
-import 'package:waiwan/utils/helper.dart';
+import 'package:waiwan_senior/model/elderly_person.dart';
+import 'package:waiwan_senior/utils/config.dart';
+import 'package:waiwan_senior/utils/helper.dart';
 
 class SearchService {
   // Use your computer's IP address when running the FastAPI server

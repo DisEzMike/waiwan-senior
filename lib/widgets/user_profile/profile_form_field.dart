@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
 
 class ProfileFormField extends StatelessWidget {
   final String label;
@@ -23,7 +24,7 @@ class ProfileFormField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: FontSizeHelper.createTextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.black87,
@@ -35,6 +36,7 @@ class ProfileFormField extends StatelessWidget {
           initialValue: controller == null ? initialValue : null,
           onChanged: onChanged,
           maxLines: maxLines,
+          style: FontSizeHelper.createTextStyle(fontSize: 16),
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.grey[100],

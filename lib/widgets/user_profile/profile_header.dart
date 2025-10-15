@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:waiwan/widgets/responsive_text.dart';
+import 'package:waiwan_senior/widgets/responsive_text.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String name;

@@ -4,10 +4,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:waiwan/screens/main_screen.dart';
-import 'package:waiwan/services/user_service.dart';
-import 'package:waiwan/utils/helper.dart';
-import 'package:waiwan/widgets/image_size_helper.dart';
+import 'package:waiwan_senior/screens/main_screen.dart';
+import 'package:waiwan_senior/services/user_service.dart';
+import 'package:waiwan_senior/utils/helper.dart';
+import 'package:waiwan_senior/widgets/image_size_helper.dart';
 
 class ProfileUploadScreen extends StatefulWidget {
   const ProfileUploadScreen({Key? key}) : super(key: key);

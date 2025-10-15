@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:waiwan/screens/chat.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
-import 'package:waiwan/utils/helper.dart';
+import 'package:waiwan_senior/screens/chat.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
+import 'package:waiwan_senior/utils/helper.dart';
 
 import '../model/chat_room.dart';
 import '../providers/chat_provider.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:waiwan/providers/font_size_provider.dart';
+import 'package:waiwan_senior/providers/font_size_provider.dart';
+import 'package:waiwan_senior/screens/notificationscreen/notification.dart';
 
 // โครงสร้างข้อมูลสำหรับแต่ละปุ่มในแถบนำทางด้านล่าง
 class NavDestination {
@@ -233,10 +234,11 @@ class _NavBarWrapperState extends State<NavBarWrapper> {
         Padding(
           padding: const EdgeInsets.only(right: 12.0), // เพิ่ม padding ขวาเพื่อขยับ bell ไปซ้าย
           child: IconButton(
-            onPressed: () {
-              // เมื่อกดไอคอน bell
-              print('Notification bell pressed');
-              // คุณสามารถเพิ่มฟังก์ชันแจ้งเตือนที่นี่
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationScreen()),
+              )
             },
             icon: const Icon(Icons.notifications),
             iconSize: fontProvider.getScaledFontSize(28), // ใช้ fontProvider สำหรับ icon ด้วย

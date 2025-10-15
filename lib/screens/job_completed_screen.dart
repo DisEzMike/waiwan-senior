@@ -1,10 +1,77 @@
 import 'package:flutter/material.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:waiwan_senior/model/job.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
+import 'package:waiwan_senior/utils/format_time.dart';
 
-class JobCompletedScreen extends StatelessWidget {
-  final Map<String, dynamic> jobData;
+class JobCompletedScreen extends StatefulWidget {
+  final MyJob job;
 
-  const JobCompletedScreen({super.key, required this.jobData});
+  const JobCompletedScreen({super.key, required this.job});
+
+  @override
+  State<JobCompletedScreen> createState() => _JobCompletedScreenState();
+}
+
+class _JobCompletedScreenState extends State<JobCompletedScreen> {
+  Future<void> _openGoogleMaps() async {
+    final lat = widget.job.location['lat'];
+    final lng = widget.job.location['lng'];
+
+    if (lat != null && lng != null) {
+      try {
+        // ลองใช้ Google Maps URL ก่อน
+        final googleMapsUrl = Uri.parse(
+          'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
+        );
+
+        // ใช้ launchUrl โดยตรงโดยไม่ตรวจสอบ canLaunchUrl ก่อน
+        await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication);
+      } catch (e) {
+        debugPrint('Google Maps URL failed: $e');
+
+        try {
+          // Fallback 1: ลอง geo URI
+          final geoUrl = Uri.parse('geo:$lat,$lng?q=$lat,$lng');
+          await launchUrl(geoUrl);
+        } catch (e2) {
+          debugPrint('Geo URL failed: $e2');
+
+          try {
+            // Fallback 2: ลอง browser URL
+            final browserUrl = Uri.parse(
+              'https://maps.google.com/?q=$lat,$lng',
+            );
+            await launchUrl(browserUrl, mode: LaunchMode.externalApplication);
+          } catch (e3) {
+            debugPrint('Browser URL failed: $e3');
+
+            // แสดง error message
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'ไม่สามารถเปิดแผนที่ได้ กรุณาตรวจสอบการติดตั้ง Google Maps',
+                  ),
+                  backgroundColor: Colors.red,
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            }
+          }
+        }
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('ไม่พบข้อมูลตำแหน่งสถานที่'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +160,7 @@ class JobCompletedScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            jobData['employerName'] ?? 'นายกาย',
+                            widget.job.userDisplayName,
                             style: FontSizeHelper.createTextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
@@ -120,25 +187,31 @@ class JobCompletedScreen extends StatelessWidget {
                   // รายละเอียดงาน
                   _buildDetailRow(
                     'วันที่:',
-                    jobData['date']?.split(',')[0] ?? '20/02/2568',
+                    start2EndDateTime(
+                      widget.job.startedAt!,
+                      widget.job.endedAt,
+                    ).split(',')[0],
                     Colors.black,
                   ),
                   const SizedBox(height: 12),
                   _buildDetailRow(
                     'เวลา:',
-                    jobData['date']?.split(', ')[1] ?? '09:00-14:00',
+                    start2EndDateTime(
+                      widget.job.startedAt!,
+                      widget.job.endedAt,
+                    ).split(',')[1],
                     Colors.black,
                   ),
                   const SizedBox(height: 12),
                   _buildDetailRow(
                     'งานที่จ้าง',
-                    jobData['title'] ?? 'จัดสถานที่',
+                    widget.job.title,
                     Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(height: 12),
                   _buildDetailRow(
                     'รายละเอียด',
-                    jobData['jobType'] ?? 'จัดสถานที่',
+                    widget.job.description,
                     Colors.black,
                   ),
 
@@ -185,7 +258,10 @@ class JobCompletedScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '88/1 ลลองกรง 1 แขวงลาดกระบัง เขตลาดกระบัง กรุงเทพมหานคร 10520',
+                    widget.job.location != null &&
+                            widget.job.location['address'] != null
+                        ? widget.job.location['address']
+                        : 'ไม่มีข้อมูลที่อยู่',
                     style: FontSizeHelper.createTextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -194,11 +270,7 @@ class JobCompletedScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   GestureDetector(
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('เปิดแผนที่')),
-                      );
-                    },
+                    onTap: () => _openGoogleMaps(),
                     child: Row(
                       children: [
                         Icon(Icons.location_pin, size: 24, color: Colors.blue),

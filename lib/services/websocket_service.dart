@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:localstorage/localstorage.dart';
-import 'package:waiwan/utils/config.dart';
+import 'package:waiwan_senior/utils/config.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import '../model/chat_message.dart';

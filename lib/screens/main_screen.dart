@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:waiwan/screens/chat_rooms_screen.dart';
-import 'package:waiwan/screens/screenmenu/home_screen_body.dart';
-import 'package:waiwan/screens/job_screen.dart';
+import 'package:waiwan_senior/screens/chat_rooms_screen.dart';
+import 'package:waiwan_senior/screens/screenmenu/home_screen_body.dart';
+import 'package:waiwan_senior/screens/job_screen.dart';
 import 'nav_bar.dart';
 import 'profilescreen/contractor_profile.dart';
 // Make sure the class name in contractor_profile.dart matches 'ContractorProfilePage'
