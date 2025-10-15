@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:provider/provider.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
-import 'package:waiwan/utils/helper.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
+import 'package:waiwan_senior/utils/helper.dart';
 import 'dart:async';
 import '../../model/chat_message.dart';
 import '../../providers/chat_provider.dart';

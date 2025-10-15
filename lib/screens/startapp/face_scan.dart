@@ -3,8 +3,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:waiwan/screens/startapp/idcard_scan_screen.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
+import 'package:waiwan_senior/screens/startapp/idcard_scan_screen.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
 
 class FaceScanScreen extends StatefulWidget {
   const FaceScanScreen({super.key});

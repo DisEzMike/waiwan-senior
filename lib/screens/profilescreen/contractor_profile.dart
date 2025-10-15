@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:waiwan/model/elderly_person.dart';
-import 'package:waiwan/screens/startapp/start_screen.dart';
-import 'package:waiwan/services/user_service.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
-import 'package:waiwan/widgets/loading_widget.dart';
+import 'package:waiwan_senior/model/elderly_person.dart';
+import 'package:waiwan_senior/screens/startapp/start_screen.dart';
+import 'package:waiwan_senior/services/user_service.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
+import 'package:waiwan_senior/widgets/loading_widget.dart';
 import 'edit_profile.dart';
 import '../../widgets/user_profile/profile_header.dart';
 import '../../widgets/user_profile/menu_items.dart';

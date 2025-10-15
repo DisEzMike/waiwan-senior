@@ -1,4 +1,4 @@
-import 'package:waiwan/model/chat_message.dart';
+import 'package:waiwan_senior/model/chat_message.dart';
 
 class ChatRoom {
   final String id;

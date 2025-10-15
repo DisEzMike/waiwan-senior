@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:waiwan/model/job.dart';
-import 'package:waiwan/providers/font_size_provider.dart';
-import 'package:waiwan/screens/job_detail_screen.dart';
-import 'package:waiwan/screens/job_status_screen.dart';
-import 'package:waiwan/services/job_service.dart';
-import 'package:waiwan/utils/format_time.dart';
-import 'package:waiwan/utils/helper.dart';
+import 'package:waiwan_senior/model/job.dart';
+import 'package:waiwan_senior/providers/font_size_provider.dart';
+import 'package:waiwan_senior/screens/job_detail_screen.dart';
+import 'package:waiwan_senior/screens/job_status_screen.dart';
+import 'package:waiwan_senior/services/job_service.dart';
+import 'package:waiwan_senior/utils/format_time.dart';
+import 'package:waiwan_senior/utils/helper.dart';
 
 class JobScreen extends StatefulWidget {
   const JobScreen({super.key});

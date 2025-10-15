@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:waiwan/screens/main_screen.dart';
-import 'package:waiwan/services/auth_service.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
+import 'package:waiwan_senior/screens/main_screen.dart';
+import 'package:waiwan_senior/services/auth_service.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
 import 'otp_screen.dart';
 
 class PhoneInputScreen extends StatefulWidget {

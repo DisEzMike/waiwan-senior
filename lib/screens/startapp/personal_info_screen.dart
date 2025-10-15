@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:waiwan/screens/startapp/ability_info.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
+import 'package:waiwan_senior/screens/startapp/ability_info.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
 
 class PersonalInfoScreen extends StatefulWidget {
   // expects arguments: Map<String, String> with parsed id info

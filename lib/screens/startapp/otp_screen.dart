@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:waiwan/screens/startapp/face_scan.dart';
-import 'package:waiwan/screens/main_screen.dart';
-import 'package:waiwan/services/auth_service.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
+import 'package:waiwan_senior/screens/startapp/face_scan.dart';
+import 'package:waiwan_senior/screens/main_screen.dart';
+import 'package:waiwan_senior/services/auth_service.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
 
 class OtpScreen extends StatefulWidget {
   final String phoneNumber;

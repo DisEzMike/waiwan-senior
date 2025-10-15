@@ -1,4 +1,4 @@
-import 'package:waiwan/utils/config.dart';
+import 'package:waiwan_senior/utils/config.dart';
 
 class User {
   final String id;

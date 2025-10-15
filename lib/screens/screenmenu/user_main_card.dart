@@ -1,9 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:waiwan/model/elderly_person.dart';
-import 'package:waiwan/utils/font_size_helper.dart';
-import 'package:waiwan/widgets/responsive_text.dart';
+import 'package:waiwan_senior/model/elderly_person.dart';
+import 'package:waiwan_senior/utils/font_size_helper.dart';
+import 'package:waiwan_senior/widgets/responsive_text.dart';
 
 class UserMainCard extends StatelessWidget {
   final ElderlyPerson user;
